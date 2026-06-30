@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const Cart = require('../models/cart');
-const Booking = require('../models/booking');
+const booking = require('../models/booking');
 const User = require('../models/user');
 const { isLoggedIn } = require('../middleware/auth');
 
@@ -330,7 +330,7 @@ router.post('/cart/checkout', isLoggedIn, wrapAsync(async function(req, res) {
 
 // ===== MY BOOKINGS =====
 router.get('/my-bookings', isLoggedIn, wrapAsync(async function(req, res) {
-  const bookings = await Booking.find({ userId: req.session.userId })
+  const bookings = await booking.find({ userId: req.session.userId })
     .sort({ createdAt: -1 });
 
   res.render('bookings/my-bookings', {
@@ -341,7 +341,7 @@ router.get('/my-bookings', isLoggedIn, wrapAsync(async function(req, res) {
 
 // ===== VIEW BOOKING DETAILS =====
 router.get('/booking/:id', isLoggedIn, wrapAsync(async function(req, res) {
-  const booking = await Booking.findOne({
+  const booking = await booking.findOne({
     _id: req.params.id,
     userId: req.session.userId
   });
@@ -360,7 +360,7 @@ router.get('/booking/:id', isLoggedIn, wrapAsync(async function(req, res) {
 
 // ===== CANCEL BOOKING =====
 router.put('/booking/cancel/:id', isLoggedIn, wrapAsync(async function(req, res) {
-  const booking = await Booking.findOne({
+  const booking = await booking.findOne({
     _id: req.params.id,
     userId: req.session.userId
   });
