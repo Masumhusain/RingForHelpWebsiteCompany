@@ -1,0 +1,21 @@
+<% layout("layouts/boilerplate") %>
+<div class="boxe " style="text-align: center;" role="alert">
+<script src="https://lottie.host/6f16ff3c-68ee-419e-b886-2e8af8de35ce/JUUikYqfUs.lottie"></script>
+<script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js" type="module"></script>
+<dotlottie-wc src="https://lottie.host/6f16ff3c-68ee-419e-b886-2e8af8de35ce/JUUikYqfUs.lottie" style="width: 500px;height: 60vh; margin: 0 auto" autoplay loop></dotlottie-wc>
+<div class="box ">
+<p class="alert alert-danger">Message: <%= err.message %></p>
+</div>
+</div>
+
+<style>
+    .box {
+        display: inline-block;
+        flex-direction: column;
+        /* width: 50%; */
+        text-align: center;
+        width: fit-content;
+        margin: 0 auto;
+
+    }
+</style>

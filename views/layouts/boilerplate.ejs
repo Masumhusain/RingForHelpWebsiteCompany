@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ring for help</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- Mapbox -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.17.0-beta.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.17.0-beta.1/mapbox-gl.js"></script>
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/cart.css">
+
+    <style>
+        /* Cart Badge */
+        #cartCount {
+            position: absolute;
+            top: -5px;
+            right: -8px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 11px;
+            display: none;
+        }
+
+        .cart-icon {
+            position: relative;
+        }
+
+        /* WhatsApp & Call Buttons */
+        .fixed-buttons {
+            position: fixed;
+            right: 20px;
+            z-index: 999;
+        }
+
+        .call-btn {
+            bottom: 100px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #007bff;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .call-btn:hover {
+            transform: scale(1.1);
+            background: #0056b3;
+            color: white;
+        }
+
+        .whatsapp-btn {
+            bottom: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #25D366;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .whatsapp-btn:hover {
+            transform: scale(1.1);
+            background: #128C7E;
+            color: white;
+        }
+
+        .fixed-buttons i {
+            font-size: 28px;
+        }
+
+        /* ===== FLASH MESSAGES STYLES ===== */
+        .flash-messages {
+            position: fixed;
+            top: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 500px;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .flash-alert {
+            pointer-events: auto;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+            border: none;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            animation: slideDown 0.5s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .flash-alert .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .alert-success.flash-alert {
+            background: linear-gradient(135deg, #d4edda, #b7ebc5);
+            color: #0d6327;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert-danger.flash-alert {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        @media (max-width: 576px) {
+            .flash-messages {
+                top: 60px;
+                width: 95%;
+            }
+            
+            .flash-alert {
+                padding: 12px 15px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER (NAVBAR) ===== -->
+    <%- include("../includes/header.ejs") %>
+
+    
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="full-body">
+            <%- include("../includes/flash.ejs") %>
+        <%- body %>
+    </div>
+
+    <!-- ===== FIXED BUTTONS ===== -->
+    <!-- Call Button -->
+    <a href="tel:+919876543210" class="fixed-buttons call-btn">
+        <i class="fa-solid fa-phone"></i>
+    </a>
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/919876543210?text=Hello%20Ring4Help!" target="_blank" class="fixed-buttons whatsapp-btn">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- ===== FOOTER ===== -->
+    <%- include("../includes/footer.ejs") %>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/JS/cart.js"></script>
+
+    <script>
+        // Update cart count from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const cartCount = localStorage.getItem('cartCount') || 0;
+            const badge = document.getElementById('cartCount');
+            if (badge) {
+                badge.textContent = cartCount;
+                badge.style.display = cartCount > 0 ? 'inline' : 'none';
+            }
+        });
+
+        // Auto dismiss flash messages after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const alerts = document.querySelectorAll('.flash-alert');
+                alerts.forEach(function(alert) {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

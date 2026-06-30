@@ -1,0 +1,634 @@
+<%- layout("layouts/boilerplate.ejs") %>
+
+<div class="my-bookings-page">
+  <div class="container py-4">
+
+    <!-- Page Header -->
+    <div class="page-header mb-4">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div>
+          <h2><i class="fas fa-calendar-check text-primary"></i> My Bookings</h2>
+          <p class="text-muted">View and manage all your service bookings</p>
+        </div>
+        <a href="/services" class="btn btn-primary">
+          <i class="fas fa-plus-circle"></i> Book New Service
+        </a>
+      </div>
+    </div>
+
+    <!-- ===== BOOKING STATS ===== -->
+    <div class="booking-stats row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="stat-card bg-white">
+          <div class="stat-icon text-primary">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-number">
+              <% if (bookings) { %>
+                <%= bookings.filter(b => b.status === 'pending' || b.status === 'confirmed').length %>
+              <% } else { %>
+                0
+              <% } %>
+            </div>
+            <div class="stat-label">Active</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card bg-white">
+          <div class="stat-icon text-success">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-number">
+              <% if (bookings) { %>
+                <%= bookings.filter(b => b.status === 'completed').length %>
+              <% } else { %>
+                0
+              <% } %>
+            </div>
+            <div class="stat-label">Completed</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card bg-white">
+          <div class="stat-icon text-warning">
+            <i class="fas fa-hourglass-half"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-number">
+              <% if (bookings) { %>
+                <%= bookings.filter(b => b.status === 'pending').length %>
+              <% } else { %>
+                0
+              <% } %>
+            </div>
+            <div class="stat-label">Pending</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card bg-white">
+          <div class="stat-icon text-danger">
+            <i class="fas fa-times-circle"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-number">
+              <% if (bookings) { %>
+                <%= bookings.filter(b => b.status === 'cancelled').length %>
+              <% } else { %>
+                0
+              <% } %>
+            </div>
+            <div class="stat-label">Cancelled</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== FILTERS ===== -->
+    <div class="filter-bar bg-white p-3 rounded-4 mb-4">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <span class="filter-label">
+            <i class="fas fa-list"></i> 
+            Showing <%= bookings ? bookings.length : 0 %> bookings
+          </span>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <select class="form-select form-select-sm d-inline-block" style="width: auto;" id="statusFilter">
+            <option value="all">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== BOOKINGS LIST ===== -->
+    <div class="bookings-list">
+      <% if (bookings && bookings.length > 0) { %>
+        <% for (var i = 0; i < bookings.length; i++) { 
+          var booking = bookings[i]; %>
+          
+          <div class="booking-card" data-status="<%= booking.status %>">
+            <div class="booking-status">
+              <span class="status-badge status-<%= booking.status %>">
+                <i class="fas <%= booking.status === 'pending' ? 'fa-clock' : booking.status === 'confirmed' ? 'fa-check-circle' : booking.status === 'completed' ? 'fa-check-double' : 'fa-times-circle' %>"></i>
+                <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
+              </span>
+            </div>
+
+            <div class="booking-body">
+              <div class="row">
+                <div class="col-md-7">
+                  <h5 class="booking-title">
+                    <a href="/service/<%= booking.categorySlug %>/<%= booking.serviceSlug %>" class="text-decoration-none text-dark">
+                      <%= booking.serviceName %>
+                    </a>
+                  </h5>
+                  <div class="booking-meta">
+                    <span><i class="fas fa-calendar-alt"></i> <%= booking.date %></span>
+                    <span><i class="fas fa-clock"></i> <%= booking.time %></span>
+                    <span><i class="fas fa-hourglass-half"></i> <%= booking.duration %> hr(s)</span>
+                    <span><i class="fas fa-hashtag"></i> <%= booking.quantity %> qty</span>
+                  </div>
+                  <div class="booking-location">
+                    <i class="fas fa-map-marker-alt text-danger"></i> <%= booking.address %>
+                  </div>
+                  <% if (booking.instructions) { %>
+                    <div class="booking-notes">
+                      <i class="fas fa-pen text-muted"></i> <%= booking.instructions %>
+                    </div>
+                  <% } %>
+                </div>
+                <div class="col-md-5 text-md-end">
+                  <div class="booking-price">
+                    <span class="price-amount">₹<%= booking.totalAmount %></span>
+                    <span class="price-label">Total</span>
+                  </div>
+                  <div class="booking-actions mt-2">
+                    <a href="/booking/<%= booking._id %>" class="btn btn-sm btn-outline-primary">
+                      <i class="fas fa-eye"></i> View Details
+                    </a>
+                    <% if (booking.status === 'pending' || booking.status === 'confirmed') { %>
+                      <button class="btn btn-sm btn-outline-danger cancel-booking" data-id="<%= booking._id %>">
+                        <i class="fas fa-times"></i> Cancel
+                      </button>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      <% } else { %>
+        <div class="empty-state text-center py-5">
+          <i class="fas fa-calendar-plus" style="font-size: 60px; color: #ddd;"></i>
+          <h3 class="mt-3">No Bookings Yet</h3>
+          <p class="text-muted">You haven't made any bookings. Start exploring our services!</p>
+          <a href="/services" class="btn btn-primary">
+            <i class="fas fa-search"></i> Browse Services
+          </a>
+        </div>
+      <% } %>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- ===== STYLES ===== -->
+<!-- ============================================ -->
+
+<style>
+  .my-bookings-page {
+    background: #f8f9fa;
+    min-height: 100vh;
+  }
+
+  .page-header h2 {
+    font-weight: 700;
+    color: #1a1a2e;
+  }
+
+  /* ===== STATS ===== */
+  .stat-card {
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: #f0f7ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+
+  .stat-info .stat-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    line-height: 1.2;
+  }
+
+  .stat-info .stat-label {
+    font-size: 13px;
+    color: #6c757d;
+  }
+
+  /* ===== FILTER BAR ===== */
+  .filter-bar {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .filter-label {
+    font-weight: 500;
+    color: #495057;
+  }
+
+  .filter-label i {
+    margin-right: 8px;
+  }
+
+  .form-select-sm {
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+    padding: 6px 30px 6px 12px;
+  }
+
+  .form-select-sm:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.15);
+  }
+
+  /* ===== BOOKING CARD ===== */
+  .booking-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: all 0.3s;
+  }
+
+  .booking-card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+
+  .booking-status {
+    padding: 10px 20px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .status-badge i {
+    font-size: 13px;
+  }
+
+  .status-pending {
+    background: #fff3cd;
+    color: #856404;
+  }
+
+  .status-confirmed {
+    background: #cce5ff;
+    color: #004085;
+  }
+
+  .status-completed {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  .status-cancelled {
+    background: #f8d7da;
+    color: #721c24;
+  }
+
+  .booking-body {
+    padding: 18px 20px;
+  }
+
+  .booking-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .booking-title a:hover {
+    color: #007bff !important;
+  }
+
+  .booking-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    font-size: 14px;
+    color: #6c757d;
+  }
+
+  .booking-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .booking-meta i {
+    width: 16px;
+  }
+
+  .booking-location {
+    font-size: 14px;
+    color: #6c757d;
+    margin-top: 4px;
+  }
+
+  .booking-location i {
+    margin-right: 4px;
+  }
+
+  .booking-notes {
+    font-size: 13px;
+    color: #6c757d;
+    margin-top: 4px;
+    font-style: italic;
+  }
+
+  .booking-price {
+    display: inline-block;
+    background: #f8f9fa;
+    padding: 8px 16px;
+    border-radius: 8px;
+  }
+
+  .booking-price .price-amount {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #28a745;
+  }
+
+  .booking-price .price-label {
+    font-size: 12px;
+    color: #6c757d;
+    display: block;
+  }
+
+  .booking-actions .btn {
+    border-radius: 6px;
+    font-size: 13px;
+    padding: 4px 12px;
+    transition: all 0.3s;
+  }
+
+  .booking-actions .btn-outline-primary:hover {
+    background: #007bff;
+    color: white;
+  }
+
+  .booking-actions .btn-outline-danger:hover {
+    background: #dc3545;
+    color: white;
+  }
+
+  /* ===== EMPTY STATE ===== */
+  .empty-state i {
+    opacity: 0.5;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 992px) {
+    .booking-meta {
+      gap: 10px;
+      font-size: 13px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .stat-card {
+      padding: 12px 15px;
+    }
+
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 18px;
+    }
+
+    .stat-info .stat-number {
+      font-size: 1.2rem;
+    }
+
+    .booking-body {
+      padding: 12px 15px;
+    }
+
+    .booking-title {
+      font-size: 1rem;
+    }
+
+    .booking-meta {
+      font-size: 12px;
+      gap: 8px;
+    }
+
+    .booking-meta span {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .booking-price .price-amount {
+      font-size: 1.1rem;
+    }
+
+    .booking-actions .btn {
+      font-size: 12px;
+      padding: 4px 10px;
+    }
+
+    .booking-actions {
+      margin-top: 10px;
+    }
+
+    .page-header .d-flex {
+      flex-direction: column;
+      align-items: flex-start !important;
+      gap: 10px;
+    }
+
+    .page-header .btn {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .booking-status {
+      padding: 8px 12px;
+    }
+
+    .status-badge {
+      font-size: 12px;
+      padding: 3px 10px;
+    }
+
+    .booking-body .row .col-md-7,
+    .booking-body .row .col-md-5 {
+      text-align: left !important;
+    }
+
+    .booking-body .row .col-md-5 {
+      margin-top: 8px;
+    }
+
+    .booking-price {
+      display: inline-block;
+    }
+
+    .booking-actions .btn {
+      margin-bottom: 4px;
+    }
+
+    .filter-bar .row {
+      gap: 8px;
+    }
+
+    .filter-bar .col-md-6 {
+      text-align: center !important;
+    }
+
+    .stat-card {
+      padding: 10px;
+    }
+
+    .stat-icon {
+      width: 35px;
+      height: 35px;
+      font-size: 16px;
+    }
+
+    .stat-info .stat-number {
+      font-size: 1rem;
+    }
+
+    .stat-info .stat-label {
+      font-size: 11px;
+    }
+  }
+</style>
+
+<!-- ============================================ -->
+<!-- ===== SCRIPTS ===== -->
+<!-- ============================================ -->
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // ===== STATUS FILTER =====
+    const statusFilter = document.getElementById('statusFilter');
+    if (statusFilter) {
+      statusFilter.addEventListener('change', function() {
+        const selectedStatus = this.value;
+        const bookingCards = document.querySelectorAll('.booking-card');
+
+        bookingCards.forEach(function(card) {
+          const cardStatus = card.dataset.status;
+          if (selectedStatus === 'all' || cardStatus === selectedStatus) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    }
+
+    // ===== CANCEL BOOKING =====
+    document.querySelectorAll('.cancel-booking').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const bookingId = this.dataset.id;
+        if (confirm('Are you sure you want to cancel this booking?')) {
+          fetch('/booking/cancel/' + bookingId, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              showToast('✅ Booking cancelled successfully', 'success');
+              setTimeout(function() {
+                location.reload();
+              }, 1000);
+            } else {
+              showToast('❌ ' + (data.error || 'Failed to cancel booking'), 'error');
+            }
+          })
+          .catch(function(error) {
+            console.error('Error:', error);
+            showToast('❌ Network error. Please try again.', 'error');
+          });
+        }
+      });
+    });
+  });
+
+  // ===== TOAST FUNCTION =====
+  function showToast(message, type) {
+    var container = document.querySelector('.toast-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.className = 'toast-container';
+      container.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 99999;
+        max-width: 380px;
+        width: 100%;
+      `;
+      document.body.appendChild(container);
+    }
+
+    var toast = document.createElement('div');
+    toast.style.cssText = `
+      background: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      margin-bottom: 10px;
+      transform: translateX(120%);
+      transition: transform 0.4s ease;
+      border-left: 4px solid ${type === 'success' ? '#28a745' : '#dc3545'};
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    `;
+
+    var icon = type === 'success' ? '✅' : '❌';
+    toast.innerHTML = `
+      <span style="font-size: 20px;">${icon}</span>
+      <span style="flex: 1; font-size: 14px;">${message}</span>
+      <button onclick="this.parentElement.remove()" style="
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: #999;
+      ">&times;</button>
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(function() {
+      toast.style.transform = 'translateX(0)';
+    }, 50);
+
+    setTimeout(function() {
+      toast.style.transform = 'translateX(120%)';
+      setTimeout(function() {
+        toast.remove();
+      }, 400);
+    }, 4000);
+  }
+</script>

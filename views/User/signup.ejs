@@ -1,0 +1,339 @@
+<%- layout("layouts/boilerplate.ejs") %>
+
+<div class="auth-page signup-page">
+
+  <div class="auth-card signup-card">
+    <h2 class="auth-title">Create Account</h2>
+    <p class="auth-subtitle">Join Ring For Help today</p>
+
+    <form action="/signup" method="POST" class="auth-form">
+
+      <!-- Full Name -->
+      <div class="auth-group">
+        <label>Full Name</label>
+        <input type="text" name="name" placeholder="Enter your full name" required>
+      </div>
+
+      <!-- Email -->
+      <div class="auth-group">
+        <label>Email</label>
+        <input type="email" name="email" placeholder="Enter your email" required>
+      </div>
+
+      <!-- Phone -->
+      <div class="auth-group">
+        <label>Phone</label>
+        <input type="tel" name="phone" placeholder="Enter your phone number" required>
+      </div>
+
+      <!-- Password -->
+      <div class="auth-group">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Create a strong password" required>
+      </div>
+
+      <!-- I want to join as (Role Selection) -->
+      <div class="auth-group">
+        <label>I want to join as</label>
+        <div class="role-options">
+          <label class="role-card">
+            <input type="radio" name="role" value="customer" checked>
+            <i class="fas fa-user"></i>
+            <span>Customer</span>
+            <small>Book services</small>
+          </label>
+          <label class="role-card">
+            <input type="radio" name="role" value="customer">
+            <i class="fas fa-tools"></i>
+            <span>Service Provider</span>
+            <small>Offer services</small>
+          </label>
+        </div>
+      </div>
+
+      <button type="submit" class="auth-btn signup-btn">
+        Sign Up
+      </button>
+
+    </form>
+
+    <p class="auth-switch">
+      Already have an account?
+      <a href="/login">Login Here</a>
+    </p>
+  </div>
+
+</div>
+
+<!-- ============================================ -->
+<!-- ===== SIGNUP STYLES ===== -->
+<!-- ============================================ -->
+
+<style>
+  /* ===== AUTH PAGE ===== */
+  .auth-page {
+    min-height: 100vh;
+    background: #1D2E45;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  /* ===== AUTH CARD ===== */
+  .auth-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    padding: 45px 40px;
+    max-width: 450px;
+    width: 100%;
+    animation: slideUp 0.5s ease;
+  }
+
+  .auth-card.signup-card {
+    max-width: 500px;
+  }
+
+  /* ===== TITLE & SUBTITLE ===== */
+  .auth-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0 0 8px 0;
+    text-align: center;
+  }
+
+  .auth-subtitle {
+    color: #6c757d;
+    text-align: center;
+    margin: 0 0 30px 0;
+    font-size: 0.95rem;
+  }
+
+  /* ===== FORM ===== */
+  .auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  /* ===== FORM GROUP ===== */
+  .auth-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .auth-group label {
+    font-weight: 600;
+    color: #1a1a2e;
+    font-size: 0.95rem;
+  }
+
+  .auth-group input {
+    padding: 12px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.3s;
+    background: #f8f9fa;
+  }
+
+  .auth-group input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  }
+
+  .auth-group input::placeholder {
+    color: #aaa;
+  }
+
+  /* ===== ROLE OPTIONS ===== */
+  .role-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .role-card {
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 18px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: #f8f9fa;
+  }
+
+  .role-card:hover {
+    border-color: #667eea;
+  }
+
+  .role-card input[type="radio"] {
+    display: none;
+  }
+
+  .role-card input[type="radio"]:checked + i {
+    color: #667eea;
+  }
+
+  .role-card:has(input:checked) {
+    border-color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+  }
+
+  .role-card i {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 8px;
+    color: #999;
+    transition: color 0.3s;
+  }
+
+  .role-card span {
+    font-weight: 600;
+    display: block;
+    font-size: 0.95rem;
+    color: #1a1a2e;
+  }
+
+  .role-card small {
+    color: #6c757d;
+    font-size: 12px;
+    display: block;
+    margin-top: 4px;
+  }
+
+  /* ===== SUBMIT BUTTON ===== */
+  .auth-btn {
+    padding: 13px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+  }
+
+  .auth-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+  }
+
+  .auth-btn:active {
+    transform: translateY(0);
+  }
+
+  /* ===== AUTH SWITCH ===== */
+  .auth-switch {
+    text-align: center;
+    color: #6c757d;
+    margin: 25px 0 0 0;
+    font-size: 0.95rem;
+  }
+
+  .auth-switch a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
+  }
+
+  .auth-switch a:hover {
+    color: #764ba2;
+    text-decoration: underline;
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 600px) {
+    .auth-card {
+      padding: 35px 25px;
+    }
+
+    .auth-card.signup-card {
+      max-width: 100%;
+    }
+
+    .auth-title {
+      font-size: 1.5rem;
+    }
+
+    .auth-group input {
+      padding: 11px 14px;
+      font-size: 0.95rem;
+    }
+
+    .auth-btn {
+      padding: 12px 16px;
+      font-size: 0.95rem;
+    }
+
+    .role-options {
+      gap: 10px;
+    }
+
+    .role-card {
+      padding: 15px;
+    }
+
+    .role-card i {
+      font-size: 24px;
+    }
+
+    .role-card span {
+      font-size: 0.85rem;
+    }
+
+    .role-card small {
+      font-size: 11px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .auth-card {
+      padding: 25px 18px;
+    }
+
+    .auth-title {
+      font-size: 1.3rem;
+    }
+
+    .auth-subtitle {
+      font-size: 0.85rem;
+    }
+
+    .auth-group label {
+      font-size: 0.85rem;
+    }
+
+    .auth-group input {
+      padding: 10px 12px;
+      font-size: 0.9rem;
+    }
+
+    .role-options {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

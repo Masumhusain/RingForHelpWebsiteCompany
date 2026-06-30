@@ -1,0 +1,193 @@
+<!-- views/provider/register.ejs -->
+<%- layout("layouts/boilerplate.ejs") %>
+
+<div class="provider-register">
+  <div class="container">
+    <h2>Complete Your Provider Profile</h2>
+    <p>Fill in the details to start offering services</p>
+    
+    <form action="/provider/register" method="POST" enctype="multipart/form-data">
+      
+      <!-- Business Info -->
+      <div class="form-section">
+        <h4>Business Information</h4>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Company/Business Name</label>
+              <input type="text" name="companyName" class="form-control" required>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Business Type</label>
+              <select name="businessType" class="form-control" required>
+                <option value="individual">Individual</option>
+                <option value="partnership">Partnership</option>
+                <option value="company">Company</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="form-group">
+              <label>About Your Business</label>
+              <textarea name="description" class="form-control" rows="3"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Services & Pricing -->
+      <div class="form-section">
+        <h4>Services & Pricing</h4>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Hourly Rate (₹)</label>
+              <input type="number" name="hourlyRate" class="form-control" required>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Minimum Charge (₹)</label>
+              <input type="number" name="minimumCharge" class="form-control">
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="form-group">
+              <label>Service Radius (km)</label>
+              <input type="number" name="serviceRadius" class="form-control" value="10">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Location -->
+      <div class="form-section">
+        <h4>Location</h4>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Street Address</label>
+              <input type="text" name="street" class="form-control" required>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>City</label>
+              <input type="text" name="city" class="form-control" required>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>State</label>
+              <input type="text" name="state" class="form-control" required>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Pincode</label>
+              <input type="text" name="pincode" class="form-control" required>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Availability -->
+      <div class="form-section">
+        <h4>Availability</h4>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Weekday Start Time</label>
+              <input type="time" name="weekdayStart" class="form-control" value="09:00">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Weekday End Time</label>
+              <input type="time" name="weekdayEnd" class="form-control" value="18:00">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Saturday Start Time</label>
+              <input type="time" name="saturdayStart" class="form-control" value="10:00">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Saturday End Time</label>
+              <input type="time" name="saturdayEnd" class="form-control" value="16:00">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Documents -->
+      <div class="form-section">
+        <h4>Documents (Optional)</h4>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Aadhar Card</label>
+              <input type="file" name="aadhar" class="form-control-file" accept=".pdf,.jpg,.png">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>PAN Card</label>
+              <input type="file" name="pan" class="form-control-file" accept=".pdf,.jpg,.png">
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="form-group">
+              <label>Profile Photo</label>
+              <input type="file" name="profileImage" class="form-control-file" accept=".jpg,.png">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button type="submit" class="btn btn-success btn-lg btn-block">
+        Submit Provider Application
+      </button>
+    </form>
+  </div>
+</div>
+
+<style>
+  .provider-register {
+    padding: 40px 0;
+    background: #f8f9fa;
+    min-height: 100vh;
+  }
+  
+  .form-section {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  
+  .form-section h4 {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f0f0f0;
+  }
+  
+  .form-control-file {
+    width: 100%;
+    padding: 8px;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .btn-block {
+    width: 100%;
+    padding: 14px;
+    font-size: 18px;
+  }
+</style>

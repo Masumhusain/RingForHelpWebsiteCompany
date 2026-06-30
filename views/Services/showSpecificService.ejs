@@ -1,0 +1,611 @@
+<%- layout("layouts/boilerplate.ejs") %>
+
+<!-- Cart CSS -->
+<link rel="stylesheet" href="/css/cart.css">
+
+<div class="category-page">
+
+  <!-- ===== CATEGORY HEADER ===== -->
+  <section class="category-header">
+    <div class="container">
+      <div class="category-header-content">
+        <h1><%= category.categoryName %></h1>
+        <p class="text-muted">
+          <i class="fas fa-list"></i> <%= category.items ? category.items.length : 0 %> services available
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SERVICES GRID ===== -->
+  <section class="category-services">
+    <div class="container">
+      
+      <!-- Filter/Sort Bar -->
+      <div class="filter-bar mb-4">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <span class="filter-label">
+              <i class="fas fa-th-large"></i> 
+              Showing <%= category.items ? category.items.length : 0 %> services
+            </span>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <div class="d-flex gap-2 justify-content-md-end">
+              <select class="form-select form-select-sm" style="width: auto;">
+                <option value="popular">Most Popular</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="rating">Highest Rated</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Services Grid -->
+      <div class="services-grid">
+        <% if (category.items && category.items.length > 0) { %>
+          <% for (var i = 0; i < category.items.length; i++) { 
+            var item = category.items[i]; %>
+            
+            <div class="service-card">
+              
+              <!-- Image -->
+              <div class="service-image">
+                <a href="/service/<%= category.slug %>/<%= item.slug %>">
+                  <img src="<%= item.image %>" alt="<%= item.name %>">
+                </a>
+                
+                <!-- Badges -->
+                <div class="service-badges">
+                  <span class="badge bg-success">Available</span>
+                </div>
+                
+                <!-- Quick View Overlay -->
+                <div class="service-overlay">
+                  <a href="/service/<%= category.slug %>/<%= item.slug %>" class="btn btn-light btn-sm">
+                    <i class="fas fa-eye"></i> Quick View
+                  </a>
+                </div>
+              </div>
+
+              <!-- Body -->
+              <div class="service-body">
+                <h5>
+                  <a href="/service/<%= category.slug %>/<%= item.slug %>" class="text-decoration-none text-dark">
+                    <%= item.name %>
+                  </a>
+                </h5>
+                
+                <!-- Rating -->
+                <div class="service-rating">
+                  <div class="stars">
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star-half-alt text-warning"></i>
+                  </div>
+                  <span class="review-count">(120+)</span>
+                </div>
+                
+                <!-- Price -->
+                <div class="service-price">
+                  <span class="current-price">₹<%= item.sub || 0 %></span>
+                  <span class="price-label">/ hour</span>
+                </div>
+
+                <!-- Add to Cart -->
+                <div class="service-actions">
+                  <button class="btn btn-primary btn-sm add-to-cart w-100" 
+                          data-service-id="<%= item._id %>"
+                          data-service-name="<%= item.name %>"
+                          data-category-slug="<%= category.slug %>"
+                          data-service-slug="<%= item.slug %>"
+                          data-image="<%= item.image %>"
+                          data-price="<%= item.sub || 0 %>">
+                    <i class="fas fa-plus-circle"></i> Add to Cart
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          <% } %>
+        <% } else { %>
+          <div class="col-12">
+            <div class="empty-state text-center py-5">
+              <i class="fas fa-box-open" style="font-size: 60px; color: #ddd;"></i>
+              <h3 class="mt-3">No Services Available</h3>
+              <p class="text-muted">Check back later for new services in this category.</p>
+              <a href="/services" class="btn btn-primary">Browse All Services</a>
+            </div>
+          </div>
+        <% } %>
+      </div>
+
+      <!-- ===== PAGINATION ===== -->
+      <% if (category.items && category.items.length > 12) { %>
+        <nav aria-label="Page navigation" class="mt-5">
+          <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+              <a class="page-link" href="#" tabindex="-1">Previous</a>
+            </li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+              <a class="page-link" href="#">Next</a>
+            </li>
+          </ul>
+        </nav>
+      <% } %>
+
+    </div>
+  </section>
+</div>
+
+<!-- ============================================ -->
+<!-- ===== STYLES ===== -->
+<!-- ============================================ -->
+
+<style>
+  /* ===== CATEGORY HEADER ===== */
+  .category-header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    padding: 60px 0;
+    color: white;
+  }
+
+  .category-header-content h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .category-header-content p {
+    font-size: 1.1rem;
+    opacity: 0.8;
+  }
+
+  .category-header-content p i {
+    margin-right: 8px;
+  }
+
+  /* ===== FILTER BAR ===== */
+  .filter-bar {
+    background: white;
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .filter-label {
+    font-weight: 500;
+    color: #495057;
+  }
+
+  .filter-label i {
+    margin-right: 8px;
+  }
+
+  .form-select-sm {
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+    padding: 6px 30px 6px 12px;
+    font-size: 13px;
+  }
+
+  .form-select-sm:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.15);
+  }
+
+  /* ===== SERVICES GRID ===== */
+  .category-services {
+    padding: 40px 0 60px;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+  }
+
+  .service-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    transition: all 0.3s;
+  }
+
+  .service-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  }
+
+  /* ===== SERVICE IMAGE ===== */
+  .service-image {
+    position: relative;
+    overflow: hidden;
+    height: 220px;
+  }
+
+  .service-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+
+  .service-card:hover .service-image img {
+    transform: scale(1.05);
+  }
+
+  .service-badges {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .service-badges .badge {
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 20px;
+  }
+
+  .service-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .service-card:hover .service-overlay {
+    opacity: 1;
+  }
+
+  .service-overlay .btn-light {
+    padding: 8px 20px;
+    font-weight: 600;
+    border-radius: 30px;
+    transition: all 0.3s;
+  }
+
+  .service-overlay .btn-light:hover {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+  }
+
+  /* ===== SERVICE BODY ===== */
+  .service-body {
+    padding: 18px;
+  }
+
+  .service-body h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+
+  .service-body h5 a:hover {
+    color: #007bff !important;
+  }
+
+  .service-rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .service-rating .stars {
+    display: flex;
+    gap: 2px;
+  }
+
+  .service-rating .stars i {
+    font-size: 13px;
+  }
+
+  .service-rating .review-count {
+    color: #6c757d;
+    font-size: 13px;
+  }
+
+  .service-price {
+    margin-bottom: 12px;
+  }
+
+  .service-price .current-price {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #28a745;
+  }
+
+  .service-price .price-label {
+    color: #6c757d;
+    font-size: 14px;
+  }
+
+  .service-actions .btn {
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-weight: 500;
+    transition: all 0.3s;
+  }
+
+  .service-actions .btn-primary {
+    background: #007bff;
+    border: none;
+  }
+
+  .service-actions .btn-primary:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+  }
+
+  .service-actions .btn-outline-secondary {
+    border: 2px solid #6c757d;
+    color: #6c757d;
+  }
+
+  .service-actions .btn-outline-secondary:hover {
+    background: #6c757d;
+    color: white;
+  }
+
+  /* ===== PAGINATION ===== */
+  .pagination .page-link {
+    color: #007bff;
+    border: 2px solid #e0e0e0;
+    padding: 8px 16px;
+    border-radius: 8px;
+    margin: 0 4px;
+    transition: all 0.3s;
+  }
+
+  .pagination .page-link:hover {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+  }
+
+  .pagination .page-item.active .page-link {
+    background: #007bff;
+    border-color: #007bff;
+    color: white;
+  }
+
+  .pagination .page-item.disabled .page-link {
+    color: #6c757d;
+  }
+
+  /* ===== EMPTY STATE ===== */
+  .empty-state i {
+    opacity: 0.5;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 992px) {
+    .category-header-content h1 {
+      font-size: 2.2rem;
+    }
+
+    .services-grid {
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+  }
+
+  @media (max-width: 768px) {
+    .category-header {
+      padding: 40px 0;
+    }
+
+    .category-header-content h1 {
+      font-size: 1.8rem;
+    }
+
+    .filter-bar {
+      padding: 12px 15px;
+    }
+
+    .filter-bar .row {
+      gap: 10px;
+    }
+
+    .filter-bar .col-md-6 {
+      text-align: center !important;
+    }
+
+    .services-grid {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .service-image {
+      height: 180px;
+    }
+
+    .service-body {
+      padding: 12px;
+    }
+
+    .service-body h5 {
+      font-size: 0.9rem;
+    }
+
+    .service-price .current-price {
+      font-size: 1.1rem;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .category-header-content h1 {
+      font-size: 1.5rem;
+    }
+
+    .services-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .service-image {
+      height: 150px;
+    }
+
+    .service-body {
+      padding: 10px;
+    }
+
+    .service-body h5 {
+      font-size: 0.8rem;
+    }
+
+    .service-price .current-price {
+      font-size: 1rem;
+    }
+
+    .service-actions .btn {
+      font-size: 12px;
+      padding: 6px 10px;
+    }
+
+    .service-rating .stars i {
+      font-size: 11px;
+    }
+
+    .service-badges .badge {
+      font-size: 10px;
+      padding: 4px 10px;
+    }
+
+    .filter-label {
+      font-size: 14px;
+    }
+
+    .pagination .page-link {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .services-grid {
+      gap: 8px;
+    }
+
+    .service-image {
+      height: 120px;
+    }
+
+    .service-body {
+      padding: 8px;
+    }
+
+    .service-body h5 {
+      font-size: 0.7rem;
+    }
+
+    .service-price .current-price {
+      font-size: 0.9rem;
+    }
+
+    .service-actions .btn {
+      font-size: 10px;
+      padding: 4px 8px;
+    }
+
+    .service-rating .review-count {
+      font-size: 10px;
+    }
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .service-card {
+    animation: fadeInUp 0.6s ease;
+  }
+
+  .service-card:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+  .service-card:nth-child(3) {
+    animation-delay: 0.2s;
+  }
+
+  .service-card:nth-child(4) {
+    animation-delay: 0.3s;
+  }
+
+  .service-card:nth-child(5) {
+    animation-delay: 0.4s;
+  }
+
+  .service-card:nth-child(6) {
+    animation-delay: 0.5s;
+  }
+</style>
+
+<!-- ============================================ -->
+<!-- ===== SCRIPTS ===== -->
+<!-- ============================================ -->
+
+<script src="/js/cart.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // ===== SORT FUNCTIONALITY =====
+    const sortSelect = document.querySelector('.form-select-sm');
+    if (sortSelect) {
+      sortSelect.addEventListener('change', function() {
+        const sortValue = this.value;
+        const grid = document.querySelector('.services-grid');
+        const cards = Array.from(grid.querySelectorAll('.service-card'));
+
+        cards.sort(function(a, b) {
+          const priceA = parseInt(a.querySelector('.current-price')?.textContent?.replace('₹', '') || 0);
+          const priceB = parseInt(b.querySelector('.current-price')?.textContent?.replace('₹', '') || 0);
+
+          if (sortValue === 'price-low') {
+            return priceA - priceB;
+          } else if (sortValue === 'price-high') {
+            return priceB - priceA;
+          } else {
+            return 0;
+          }
+        });
+
+        cards.forEach(function(card) {
+          grid.appendChild(card);
+        });
+      });
+    }
+  });
+</script>

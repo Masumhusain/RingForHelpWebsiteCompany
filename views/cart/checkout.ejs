@@ -1,0 +1,408 @@
+<%- layout("/layouts/boilerplate.ejs") %>
+
+<!-- Cart CSS -->
+<link rel="stylesheet" href="/css/cart.css">
+
+<div class="checkout-page">
+  <div class="container py-4">
+
+    <!-- Page Header -->
+    <div class="checkout-header mb-4">
+      <h2><i class="fas fa-shopping-cart text-primary"></i> Checkout</h2>
+      <p class="text-muted">Complete your booking details</p>
+    </div>
+
+    <div class="row g-4">
+
+      <!-- ===== LEFT: CHECKOUT FORM ===== -->
+      <div class="col-lg-8">
+        <form action="/cart/checkout" method="POST" id="checkoutForm">
+          
+          <!-- Step 1: Contact Information -->
+          <div class="checkout-section">
+            <h5><i class="fas fa-user text-primary"></i> Contact Information</h5>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Full Name *</label>
+                <input type="text" name="name" class="form-control" 
+                       value="<%= user.name %>" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Phone Number *</label>
+                <input type="tel" name="phone" class="form-control" 
+                       value="<%= user.phone %>" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Email Address *</label>
+                <input type="email" name="email" class="form-control" 
+                       value="<%= user.email %>" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Service Address -->
+          <div class="checkout-section">
+            <h5><i class="fas fa-map-marker-alt text-danger"></i> Service Address</h5>
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label">Street Address *</label>
+                <textarea name="address" class="form-control" rows="2" 
+                          placeholder="Enter your complete address" required></textarea>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">City *</label>
+                <input type="text" name="city" class="form-control" placeholder="City" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">State *</label>
+                <input type="text" name="state" class="form-control" placeholder="State" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Pincode *</label>
+                <input type="text" name="pincode" class="form-control" placeholder="Pincode" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Schedule -->
+          <div class="checkout-section">
+            <h5><i class="fas fa-calendar-alt text-warning"></i> Schedule</h5>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Date *</label>
+                <input type="date" name="date" class="form-control" 
+                       min="<%= new Date().toISOString().split('T')[0] %>" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Time *</label>
+                <select name="time" class="form-control" required>
+                  <option value="">Select time</option>
+                  <option value="09:00">9:00 AM</option>
+                  <option value="09:30">9:30 AM</option>
+                  <option value="10:00">10:00 AM</option>
+                  <option value="10:30">10:30 AM</option>
+                  <option value="11:00">11:00 AM</option>
+                  <option value="11:30">11:30 AM</option>
+                  <option value="12:00">12:00 PM</option>
+                  <option value="12:30">12:30 PM</option>
+                  <option value="13:00">1:00 PM</option>
+                  <option value="13:30">1:30 PM</option>
+                  <option value="14:00">2:00 PM</option>
+                  <option value="14:30">2:30 PM</option>
+                  <option value="15:00">3:00 PM</option>
+                  <option value="15:30">3:30 PM</option>
+                  <option value="16:00">4:00 PM</option>
+                  <option value="16:30">4:30 PM</option>
+                  <option value="17:00">5:00 PM</option>
+                  <option value="17:30">5:30 PM</option>
+                  <option value="18:00">6:00 PM</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4: Special Instructions -->
+          <div class="checkout-section">
+            <h5><i class="fas fa-pen text-info"></i> Special Instructions</h5>
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label">Any special requests?</label>
+                <textarea name="instructions" class="form-control" rows="2" 
+                          placeholder="e.g., Bring your own tools, Call before arriving, etc."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="checkout-actions mt-4">
+            <a href="/cart" class="btn btn-outline-secondary">
+              <i class="fas fa-arrow-left"></i> Back to Cart
+            </a>
+            <button type="submit" class="btn btn-success btn-lg" id="placeOrderBtn">
+              <i class="fas fa-check-circle"></i> Place Order
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- ===== RIGHT: ORDER SUMMARY ===== -->
+      <div class="col-lg-4">
+        <div class="order-summary">
+          <h5><i class="fas fa-receipt"></i> Order Summary</h5>
+          
+          <div class="summary-items">
+            <% for (var i = 0; i < cart.items.length; i++) { 
+              var item = cart.items[i]; %>
+              <div class="summary-item">
+                <div class="item-info">
+                  <span class="item-name"><%= item.serviceName %></span>
+                  <span class="item-meta">
+                    <%= item.quantity %> × <%= item.duration %> hr(s)
+                  </span>
+                </div>
+                <span class="item-price">₹<%= item.totalPrice %></span>
+              </div>
+            <% } %>
+          </div>
+
+          <div class="summary-divider"></div>
+
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span>₹<%= cart.totalAmount %></span>
+          </div>
+          <div class="summary-row">
+            <span>Service Fee (5%)</span>
+            <span>₹<%= Math.round(cart.totalAmount * 0.05) %></span>
+          </div>
+          <div class="summary-row total">
+            <span><strong>Total Amount</strong></span>
+            <span><strong>₹<%= cart.totalAmount + Math.round(cart.totalAmount * 0.05) %></strong></span>
+          </div>
+
+          <div class="summary-note">
+            <i class="fas fa-shield-alt text-success"></i>
+            <small>Your booking is secure and guaranteed</small>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- ===== STYLES ===== -->
+<!-- ============================================ -->
+
+<style>
+  .checkout-page {
+    background: #f8f9fa;
+    min-height: 100vh;
+  }
+
+  .checkout-header h2 {
+    font-weight: 700;
+    color: #1a1a2e;
+  }
+
+  /* ===== CHECKOUT SECTIONS ===== */
+  .checkout-section {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .checkout-section h5 {
+    margin-bottom: 18px;
+    color: #1a1a2e;
+    font-weight: 600;
+  }
+
+  .checkout-section h5 i {
+    margin-right: 8px;
+  }
+
+  .form-label {
+    font-weight: 500;
+    font-size: 14px;
+    color: #495057;
+  }
+
+  .form-control {
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    transition: all 0.3s;
+  }
+
+  .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.15);
+  }
+
+  textarea.form-control {
+    resize: vertical;
+  }
+
+  /* ===== CHECKOUT ACTIONS ===== */
+  .checkout-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+
+  .checkout-actions .btn {
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s;
+  }
+
+  .checkout-actions .btn-outline-secondary:hover {
+    background: #6c757d;
+    color: white;
+  }
+
+  .checkout-actions .btn-success {
+    background: #28a745;
+    border: none;
+  }
+
+  .checkout-actions .btn-success:hover {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(40,167,69,0.3);
+  }
+
+  /* ===== ORDER SUMMARY ===== */
+  .order-summary {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    position: sticky;
+    top: 20px;
+  }
+
+  .order-summary h5 {
+    margin-bottom: 18px;
+    color: #1a1a2e;
+    font-weight: 600;
+  }
+
+  .order-summary h5 i {
+    margin-right: 8px;
+  }
+
+  .summary-items {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .summary-item:last-child {
+    border-bottom: none;
+  }
+
+  .summary-item .item-name {
+    font-weight: 500;
+    font-size: 14px;
+  }
+
+  .summary-item .item-meta {
+    display: block;
+    font-size: 12px;
+    color: #6c757d;
+  }
+
+  .summary-item .item-price {
+    font-weight: 600;
+    color: #28a745;
+  }
+
+  .summary-divider {
+    border-top: 2px dashed #e0e0e0;
+    margin: 12px 0;
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 14px;
+  }
+
+  .summary-row.total {
+    font-size: 18px;
+    border-top: 2px solid #e0e0e0;
+    padding-top: 15px;
+    margin-top: 5px;
+  }
+
+  .summary-row.total strong {
+    color: #1a1a2e;
+  }
+
+  .summary-note {
+    text-align: center;
+    margin-top: 15px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+  }
+
+  .summary-note i {
+    margin-right: 6px;
+  }
+
+  .summary-note small {
+    color: #6c757d;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 992px) {
+    .order-summary {
+      position: static;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .checkout-section {
+      padding: 18px;
+    }
+
+    .checkout-actions {
+      flex-direction: column;
+    }
+
+    .checkout-actions .btn {
+      width: 100%;
+    }
+
+    .order-summary {
+      padding: 18px;
+    }
+
+    .summary-row.total {
+      font-size: 16px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .checkout-header h2 {
+      font-size: 1.5rem;
+    }
+
+    .checkout-section {
+      padding: 14px;
+    }
+
+    .checkout-section h5 {
+      font-size: 1rem;
+    }
+
+    .summary-item .item-name {
+      font-size: 13px;
+    }
+
+    .summary-row {
+      font-size: 13px;
+    }
+
+    .summary-row.total {
+      font-size: 15px;
+    }
+  }
+</style>

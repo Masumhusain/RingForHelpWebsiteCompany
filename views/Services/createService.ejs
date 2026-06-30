@@ -1,0 +1,146 @@
+<%- layout("layouts/boilerplate.ejs") %>
+
+<form action="/addCategory" method="POST" class="container mt-5">
+  <h3 class="mb-4">Add New Category with Services</h3>
+
+  <!-- CATEGORY NAME -->
+  <div class="mb-3">
+    <label class="form-label"> Select Category Name</label>
+    <select name="categoryName" id="categoryName" class="form-select">
+      <option value="" disabled selected>Select your category</option>
+      <option value="marriage-services">Marriage Services</option>
+      <option value="Maintenance-Services">Maintenance Services</option>
+      <option value="E-Ticketing-Service">E-Ticketing Service</option>
+      <option value="Agriculture-Service">Agriculture Service</option>
+      <option value="Digital-Service">Digital Service</option>
+      <option value="Block-Service">Block Service</option>
+      <option value="Real-Estate-Service">Real Estate Service</option>
+      <option value="Job-Consultancy-Service">Job Consultancy Service</option>
+    </select>
+  </div>
+
+  <!-- CATEGORY SLUG -->
+  <div class="mb-3">
+    <label class="form-label">Category Slug</label>
+    <input
+      type="text"
+      class="form-control"
+      id="categorySlug"
+      name="categorySlug"
+      placeholder="auto-generated"
+      readonly
+      required>
+  </div>
+
+  <hr>
+
+  <h5 class="mb-3">Add Services</h5>
+
+  <div id="servicesContainer">
+
+    <div class="service-item mb-4 border p-3 rounded">
+      <h6>Service 1</h6>
+
+      <div class="mb-2">
+        <label class="form-label">Service Name</label>
+        <input
+          type="text"
+          class="form-control service-name"
+          name="items[0][name]"
+          placeholder="e.g. Website Development"
+          required>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label">Service Slug</label>
+        <input
+          type="text"
+          class="form-control service-slug"
+          name="items[0][slug]"
+          placeholder="auto-generated"
+          readonly
+          required>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label">Image URL</label>
+        <input
+          type="text"
+          class="form-control"
+          name="items[0][image]"
+          placeholder="https://example.com/image.jpg"
+          required>
+      </div>
+
+      <div class="row mb-2">
+        <div class="col">
+          <label class="form-label">Sub</label>
+          <input type="number" name="items[0][sub]" class="form-control" placeholder="1000" >
+        </div>
+        <div class="col">
+          <label class="form-label">Renew</label>
+          <input type="number" name="items[0][renew]" class="form-control" placeholder="800" >
+        </div>
+        <div class="col">
+          <label class="form-label">Non-Contract</label>
+          <input type="number" name="items[0][nonContract]" class="form-control" placeholder="1200" >
+        </div>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label">Contract</label>
+        <input
+          type="text"
+          name="items[0][contract]"
+          class="form-control"
+          placeholder="6 Months / 1 Year"
+          >
+      </div>
+
+      <button type="button" class="btn btn-danger btn-sm remove-service">Remove</button>
+    </div>
+
+  </div>
+
+  <button type="button" id="addServiceBtn" class="btn btn-success mb-3">
+    + Add Another Service
+  </button>
+
+  <br>
+  <button type="submit" class="btn btn-primary mb-4">Save Category</button>
+</form>
+<script>
+  function generateSlug(text) {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
+  }
+
+  // CATEGORY SLUG
+  const categoryName = document.getElementById("categoryName");
+  const categorySlug = document.getElementById("categorySlug");
+
+  categoryName.addEventListener("input", () => {
+    categorySlug.value = generateSlug(categoryName.value);
+  });
+
+  // SERVICE SLUGS
+  function bindServiceSlug() {
+    const serviceNames = document.querySelectorAll(".service-name");
+
+    serviceNames.forEach(input => {
+      input.addEventListener("input", () => {
+        const slugInput = input
+          .closest(".service-item")
+          .querySelector(".service-slug");
+
+        slugInput.value = generateSlug(input.value);
+      });
+    });
+  }
+
+  bindServiceSlug();
+</script>

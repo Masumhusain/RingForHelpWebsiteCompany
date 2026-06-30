@@ -1,0 +1,380 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-3">
+  <div class="container">
+
+    <a class="navbar-brand fw-bold fs-3" href="/">Ring4Help</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/about">About</a>
+        </li>
+
+        <!-- Services Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Services
+          </a>
+          <ul class="dropdown-menu">
+            <!-- digital services starts from here  -->
+            <li class="dropdown-submenu">
+              <a class="dropdown-item" href="/category/digital-service">Digital Services</a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/service/digital-services/website-development">Graphic Designer</a></li>
+                <li><a class="dropdown-item" href="/service/digital-services/digital-marketing">Web Designer</a></li>
+                <li><a class="dropdown-item" href="/service/digital-services/digital-marketing">Web Developer</a></li>
+                <li><a class="dropdown-item" href="/service/digital-services/digital-marketing">Video Editor</a></li>
+                <li><a class="dropdown-item" href="/service/digital-services/digital-marketing">All Digital services</a></li>
+              </ul>
+            </li>
+            <!-- maintenance sevices starts from here  -->
+            <li class="dropdown-submenu">
+              <a class="dropdown-item" href="/category/maintenance-services">Maintenance Services</a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/service/electrical-services/home-wiring">Electrician</a></li>
+                <li><a class="dropdown-item" href="/service/electrical-services/home-wiring">Plumber</a></li>
+                <li><a class="dropdown-item" href="/service/electrical-services/home-wiring">Painter</a></li>
+                <!-- YAHAN FIX KIYA HAI - " जोड़ा है -->
+                <li><a class="dropdown-item" href="/category/maintenance-services">All Maintenance services</a></li>
+              </ul>
+            </li>
+            <!-- e-ticketing starts from here  -->
+            <li class="dropdown-submenu">
+              <a class="dropdown-item" href="/category/e-ticketing-service">E-Ticketing Services</a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/service/gardening-services/lawn-care">Bus</a></li>
+                <li><a class="dropdown-item" href="/service/gardening-services/tree-maintenance">Train</a></li>
+                <li><a class="dropdown-item" href="/service/gardening-services/tree-maintenance">Flight</a></li>
+                <li><a class="dropdown-item" href="/category/e-ticketing-service">All E-ticketing services</a></li>
+              </ul>
+            </li>
+            <!-- Agriculture services start from here  -->
+            <li class="dropdown-submenu">
+              <a class="dropdown-item" href="/category/agriculture-service">Agriculture Services</a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/service/gardening-services/lawn-care">Thresher</a></li>
+                <li><a class="dropdown-item" href="/service/gardening-services/tree-maintenance">Grain</a></li>
+                <li><a class="dropdown-item" href="/service/gardening-services/tree-maintenance">vegetable</a></li>
+                <li><a class="dropdown-item" href="/category/agriculture-service">All Agriculture services</a></li>
+              </ul>
+            </li>
+            <!-- block services start from here  -->
+            <li class="dropdown-submenu">
+              <a class="dropdown-item" href="/category/block-service">Block Services</a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/service/gardening-services/lawn-care">Caste Certificate</a></li>
+                <li><a class="dropdown-item" href="/service/gardening-services/tree-maintenance">Income Certificate</a></li>
+                <li><a class="dropdown-item" href="/service/gardening-services/tree-maintenance">Pm Kisan</a></li>
+                <li><a class="dropdown-item" href="/category/block-service">All Block services</a></li>
+              </ul>
+            </li>
+            <!-- Marriage services starts from here  -->
+            <li class="dropdown-submenu">
+              <a class="dropdown-item" href="/category/marriage-services">Marriage Services</a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/service/gardening-services/lawn-care">Cook</a></li>
+                <li><a class="dropdown-item" href="/service/gardening-services/tree-maintenance">Tent</a></li>
+                <li><a class="dropdown-item" href="/service/gardening-services/tree-maintenance">Flower Decorator</a></li>
+                <li><a class="dropdown-item" href="/category/marriage-services">All Marriage services</a></li>
+              </ul>
+            </li>
+            <!-- Real e state services starts from here  -->
+            <li class="dropdown-submenu">
+              <a class="dropdown-item" href="/category/real-estate-service">Real Estate Services</a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/service/gardening-services/lawn-care">Land Purchase</a></li>
+                <li><a class="dropdown-item" href="/service/gardening-services/tree-maintenance">Flat Purchase</a></li>
+                <li><a class="dropdown-item" href="/service/gardening-services/tree-maintenance">Bunglaw</a></li>
+                <li><a class="dropdown-item" href="/category/real-estate-service">All Real Estate services</a></li>
+              </ul>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item fw-bold text-success" href="/addCategory">
+                + Add New Service
+              </a>
+            </li>
+          </ul>
+        </li>
+        <%if(currUser && currUser.role != 'admin') {%>
+        <li class="nav-item">
+          <a class="nav-link" href="/connect">Connect</a>
+        </li>
+
+        <!-- Get Hired -->
+        <li class="nav-item">
+          <a class="nav-link" href="/get-hired">
+            <i class="fas fa-user-tie"></i> Get Hired
+          </a>
+        </li>
+
+        <!-- Cart -->
+        <li class="nav-item">
+          <a class="nav-link" href="/cart" style="position: relative;">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cartCount" style="
+              position: absolute;
+              top: -5px;
+              right: -8px;
+              background: #dc3545;
+              color: white;
+              border-radius: 50%;
+              padding: 2px 8px;
+              font-size: 11px;
+              display: none;
+            ">0</span>
+          </a>
+        </li>
+<%}%>
+        <!-- ===== AUTH LINKS - USING currUser ONLY ===== -->
+        <% if (!currUser) { %>
+          <!-- User NOT logged in -->
+          <li class="nav-item">
+            <a class="nav-link" href="/signup">Sign Up</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Login</a>
+          </li>
+        <% } else { %>
+          <!-- User IS logged in -->
+          
+          <!-- Provider Dashboard Link -->
+          <% if (currUser.role === 'provider') { %>
+            <li class="nav-item">
+              <a class="nav-link" href="/provider/dashboard">
+                <i class="fas fa-tools"></i> Dashboard
+              </a>
+            </li>
+          <% } %>
+          
+          <!-- Admin Dashboard -->
+          <% if (currUser.role === 'admin') { %>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
+                <i class="fas fa-shield-alt"></i> Dashboard
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/admin/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a class="dropdown-item" href="/admin/users"><i class="fas fa-users"></i> Users</a></li>
+                <li><a class="dropdown-item" href="/admin/providers"><i class="fas fa-user-check"></i> Providers</a></li>
+                <li><a class="dropdown-item" href="/admin/bookings"><i class="fas fa-calendar-check"></i> Bookings</a></li>
+                <li><a class="dropdown-item" href="/admin/categories"><i class="fas fa-tags"></i> Categories</a></li>
+              </ul>
+            </li>
+          <% } %>
+
+          <!-- User Name with Dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-user-circle"></i> <%= currUser.name %>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="/profile"><i class="fas fa-id-card"></i> My Profile</a></li>
+              <li><a class="dropdown-item" href="/my-bookings"><i class="fas fa-calendar-check"></i> My Bookings</a></li>
+              <% if (currUser.role === 'provider') { %>
+                <li><a class="dropdown-item" href="/provider/dashboard"><i class="fas fa-tools"></i> Dashboard</a></li>
+              <% } %>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+          </li>
+        <% } %>
+        <!-- ===== END AUTH LINKS ===== -->
+
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== STYLES ===== -->
+<style>
+  /* Base */
+  .navbar .nav-link {
+    padding: 0.6rem 1rem;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+
+  .navbar .nav-link:hover {
+    color: #ffc107 !important;
+  }
+
+  /* Dropdown base */
+  .dropdown-menu {
+    background: #2c2c2c;
+    border-radius: 10px;
+    border: none;
+    padding: 0.5rem 0;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    min-width: 200px;
+  }
+
+  .dropdown-item {
+    color: #fff;
+    padding: 10px 18px;
+    transition: background 0.25s, color 0.25s;
+  }
+
+  .dropdown-item:hover {
+    background: #444;
+    color: #ffc107;
+  }
+
+  .dropdown-item.text-danger:hover {
+    background: #dc3545;
+    color: white !important;
+  }
+
+  .dropdown-item.text-success:hover {
+    background: #28a745;
+    color: white !important;
+  }
+
+  /* Submenu */
+  .dropdown-submenu {
+    position: relative;
+  }
+
+  .dropdown-submenu > .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-left: 4px;
+    display: none;
+    background: #3a3a3a;
+    border-radius: 10px;
+  }
+
+  .dropdown-submenu:hover > .dropdown-menu {
+    display: block;
+  }
+
+  .dropdown-submenu > .dropdown-item::after {
+    content: "▸";
+    float: right;
+    font-size: 14px;
+    margin-left: 10px;
+    color: #888;
+    transition: transform 0.2s ease;
+  }
+
+  .dropdown-submenu:hover > .dropdown-item::after {
+    color: #ffc107;
+    transform: rotate(90deg);
+  }
+
+  /* User dropdown */
+  .dropdown-menu-end {
+    right: 0;
+    left: auto;
+  }
+
+  /* Desktop hover */
+  @media (min-width: 992px) {
+    .navbar .dropdown:hover > .dropdown-menu {
+      display: block;
+    }
+  }
+
+  /* Mobile fix */
+  @media (max-width: 991px) {
+    .navbar-collapse {
+      background: rgba(33, 33, 33, 0.98);
+      padding: 1rem;
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+
+    .dropdown-menu {
+      position: static;
+      box-shadow: none;
+      background: transparent;
+      padding-left: 15px;
+    }
+
+    .dropdown-item {
+      color: #ddd;
+    }
+
+    .dropdown-item:hover {
+      background: rgba(255,255,255,0.1);
+      color: #ffc107;
+    }
+
+    .dropdown-submenu > .dropdown-menu {
+      left: 0;
+      margin-left: 15px;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .dropdown-submenu > .dropdown-item::after {
+      content: "▼";
+    }
+
+    .dropdown-menu-end {
+      right: auto;
+      left: 0;
+    }
+
+    .navbar-nav .dropdown-menu {
+      background: transparent;
+      padding-left: 15px;
+    }
+    
+    .navbar-nav .dropdown-menu .dropdown-item {
+      color: #ddd;
+    }
+    
+    .navbar-nav .dropdown-menu .dropdown-item:hover {
+      background: rgba(255,255,255,0.1);
+    }
+  }
+
+  @media (max-width: 576px) {
+    .navbar-brand {
+      font-size: 1.5rem !important;
+    }
+    
+    .navbar .nav-link {
+      padding: 0.5rem 0.8rem;
+      font-size: 14px;
+    }
+  }
+
+  .nav-link.active {
+    color: #ffc107 !important;
+  }
+
+  .fa-user-circle {
+    font-size: 1.2rem;
+  }
+</style>
+
+
+<!-- ===== BOOTSTRAP JS ===== -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- ===== SUBMENU FIX FOR MOBILE ===== -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.innerWidth <= 991) {
+      document.querySelectorAll('.dropdown-submenu > .dropdown-item').forEach(function(item) {
+        item.addEventListener('click', function(e) {
+          e.preventDefault();
+          const submenu = this.nextElementSibling;
+          if (submenu && submenu.classList.contains('dropdown-menu')) {
+            submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+          }
+        });
+      });
+    }
+  });
+</script>

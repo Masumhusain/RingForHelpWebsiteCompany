@@ -1,0 +1,33 @@
+<%- layout("layouts/boilerplate.ejs") %>
+
+<div class="auth-page login-page">
+
+  <div class="auth-card">
+    <h2 class="auth-title">Welcome Back</h2>
+    <p class="auth-subtitle">Login to your account</p>
+
+    <form action="/login" method="POST" class="auth-form">
+
+      <div class="auth-group">
+        <label>Email</label>
+        <input type="email" name="email" placeholder="enter email" required>
+      </div>
+
+      <div class="auth-group">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="enter password" required>
+      </div>
+
+      <button type="submit" class="auth-btn">
+        Login
+      </button>
+
+    </form>
+
+    <p class="auth-switch">
+      Don’t have an account?
+      <a href="/signup">Sign Up</a>
+    </p>
+  </div>
+
+</div>

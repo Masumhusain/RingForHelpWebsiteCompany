@@ -1,0 +1,321 @@
+<%- layout("/layouts/boilerplate.ejs") %>
+
+<div class="admin-page">
+  <div class="container py-4">
+
+    <!-- Page Header -->
+    <div class="admin-header mb-4">
+      <h2><i class="fas fa-shield-alt text-primary"></i> Admin Dashboard</h2>
+      <p class="text-muted">Welcome back, <%= user.name %>! Here's what's happening.</p>
+    </div>
+
+    <!-- ===== STATS CARDS ===== -->
+    <div class="stats-grid row g-3 mb-4">
+      <div class="col-md-3 col-6">
+        <div class="stat-card bg-white">
+          <div class="stat-icon text-primary">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-number"><%= stats.totalUsers || 0 %></div>
+            <div class="stat-label">Total Users</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="stat-card bg-white">
+          <div class="stat-icon text-success">
+            <i class="fas fa-tools"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-number"><%= stats.totalProviders || 0 %></div>
+            <div class="stat-label">Providers</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="stat-card bg-white">
+          <div class="stat-icon text-warning">
+            <i class="fas fa-calendar-check"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-number"><%= stats.totalBookings || 0 %></div>
+            <div class="stat-label">Total Bookings</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="stat-card bg-white">
+          <div class="stat-icon text-danger">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-number"><%= stats.pendingBookings || 0 %></div>
+            <div class="stat-label">Pending Bookings</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== QUICK ACTIONS ===== -->
+    <div class="quick-actions row g-3 mb-4">
+      <div class="col-md-3 col-6">
+        <a href="/admin/users" class="action-card">
+          <i class="fas fa-users-cog"></i>
+          <span>Manage Users</span>
+        </a>
+      </div>
+      <div class="col-md-3 col-6">
+        <a href="/admin/providers" class="action-card">
+          <i class="fas fa-user-check"></i>
+          <span>Verify Providers</span>
+          <% if (stats.pendingProviders > 0) { %>
+            <span class="badge bg-danger"><%= stats.pendingProviders %></span>
+          <% } %>
+        </a>
+      </div>
+      <div class="col-md-3 col-6">
+        <a href="/admin/bookings" class="action-card">
+          <i class="fas fa-list"></i>
+          <span>All Bookings</span>
+        </a>
+      </div>
+      <div class="col-md-3 col-6">
+        <a href="/admin/categories" class="action-card">
+          <i class="fas fa-tags"></i>
+          <span>Categories</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- ===== RECENT BOOKINGS ===== -->
+    <div class="recent-section">
+      <h5><i class="fas fa-clock text-primary"></i> Recent Bookings</h5>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>Customer</th>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (recentBookings && recentBookings.length > 0) { %>
+              <% for (var i = 0; i < recentBookings.length; i++) { 
+                var booking = recentBookings[i]; %>
+                <tr>
+                  <td><%= booking.serviceName %></td>
+                  <td><%= booking.userId ? booking.userId.name : 'N/A' %></td>
+                  <td><%= booking.date %></td>
+                  <td>₹<%= booking.totalAmount %></td>
+                  <td>
+                    <span class="status-badge status-<%= booking.status %>">
+                      <%= booking.status %>
+                    </span>
+                  </td>
+                  <td>
+                    <a href="/admin/bookings" class="btn btn-sm btn-primary">View</a>
+                  </td>
+                </tr>
+              <% } %>
+            <% } else { %>
+              <tr>
+                <td colspan="6" class="text-center">No bookings yet</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- ===== STYLES ===== -->
+<!-- ============================================ -->
+
+<style>
+  .admin-page {
+    background: #f8f9fa;
+    min-height: 100vh;
+  }
+
+  .admin-header h2 {
+    font-weight: 700;
+    color: #1a1a2e;
+  }
+
+  /* ===== STATS CARDS ===== */
+  .stat-card {
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: #f0f7ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+
+  .stat-info .stat-number {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    line-height: 1.2;
+  }
+
+  .stat-info .stat-label {
+    font-size: 14px;
+    color: #6c757d;
+  }
+
+  /* ===== QUICK ACTIONS ===== */
+  .action-card {
+    display: block;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    text-decoration: none;
+    color: #1a1a2e;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .action-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    color: #1a1a2e;
+  }
+
+  .action-card i {
+    font-size: 32px;
+    display: block;
+    margin-bottom: 8px;
+    color: #007bff;
+  }
+
+  .action-card span {
+    display: block;
+    font-weight: 500;
+  }
+
+  .action-card .badge {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 12px;
+    padding: 4px 10px;
+  }
+
+  /* ===== RECENT SECTION ===== */
+  .recent-section {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .recent-section h5 {
+    margin-bottom: 15px;
+    font-weight: 600;
+  }
+
+  .table {
+    margin: 0;
+  }
+
+  .table th {
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #e9ecef;
+  }
+
+  .table td {
+    vertical-align: middle;
+  }
+
+  .status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .status-pending {
+    background: #fff3cd;
+    color: #856404;
+  }
+
+  .status-confirmed {
+    background: #cce5ff;
+    color: #004085;
+  }
+
+  .status-completed {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  .status-cancelled {
+    background: #f8d7da;
+    color: #721c24;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .stat-card {
+      padding: 12px 15px;
+    }
+
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 18px;
+    }
+
+    .stat-info .stat-number {
+      font-size: 1.4rem;
+    }
+
+    .action-card {
+      padding: 15px;
+    }
+
+    .action-card i {
+      font-size: 24px;
+    }
+
+    .recent-section {
+      padding: 15px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .stat-card {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .action-card .badge {
+      position: static;
+      display: inline-block;
+      margin-top: 5px;
+    }
+  }
+</style>

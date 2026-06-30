@@ -1,0 +1,658 @@
+<%- layout("/layouts/boilerplate.ejs") %>
+
+<div class="admin-page">
+  <div class="container py-4">
+
+    <!-- Page Header -->
+    <div class="admin-header mb-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h2><i class="fas fa-calendar-check text-primary"></i> Manage Bookings</h2>
+          <p class="text-muted">View and manage all bookings</p>
+        </div>
+        <a href="/admin/dashboard" class="btn btn-outline-secondary">
+          <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+      </div>
+    </div>
+
+    <!-- Bookings Table -->
+    <div class="table-card">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Service</th>
+              <th>Customer</th>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (bookings && bookings.length > 0) { %>
+              <% for (var i = 0; i < bookings.length; i++) { 
+                var booking = bookings[i]; %>
+                <tr>
+                  <td><%= i + 1 %></td>
+                  <td><strong><%= booking.serviceName %></strong></td>
+                  <td>
+                    <a href="#" class="customer-details-link" 
+                       data-userid="<%= booking.userId ? booking.userId._id : '' %>"
+                       data-bookingid="<%= booking._id %>">
+                      <%= booking.userId ? booking.userId.name : 'N/A' %>
+                    </a>
+                  </td>
+                  <td><%= booking.date %> at <%= booking.time %></td>
+                  <td>₹<%= booking.totalAmount %></td>
+                  <td>
+                    <select class="form-select form-select-sm status-select" data-id="<%= booking._id %>">
+                      <option value="pending" <%= booking.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                      <option value="confirmed" <%= booking.status === 'confirmed' ? 'selected' : '' %>>Confirmed</option>
+                      <option value="completed" <%= booking.status === 'completed' ? 'selected' : '' %>>Completed</option>
+                      <option value="cancelled" <%= booking.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+                    </select>
+                  </td>
+                  <td>
+                    <button class="btn btn-sm btn-info view-booking" data-id="<%= booking._id %>" title="View Details">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger delete-booking" data-id="<%= booking._id %>" title="Delete">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              <% } %>
+            <% } else { %>
+              <tr>
+                <td colspan="7" class="text-center py-4">No bookings found</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- ===== CUSTOMER DETAILS MODAL ===== -->
+<!-- ============================================ -->
+
+<div class="modal fade" id="customerModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-user-circle text-primary"></i> 
+          <span id="customerName">Customer Details</span>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Customer Info -->
+        <div class="customer-info-card">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="info-item">
+                <label>Full Name</label>
+                <p id="cName">-</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="info-item">
+                <label>Email</label>
+                <p id="cEmail">-</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="info-item">
+                <label>Phone</label>
+                <p id="cPhone">-</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="info-item">
+                <label>Role</label>
+                <p id="cRole">-</p>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="info-item">
+                <label>Address</label>
+                <p id="cAddress">-</p>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="info-item">
+                <label>Total Bookings</label>
+                <p id="cTotalBookings">-</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customer's All Bookings -->
+        <h6 class="mt-4 mb-3">
+          <i class="fas fa-list text-primary"></i> All Bookings by this Customer
+        </h6>
+        <div class="table-responsive">
+          <table class="table table-sm table-hover" id="customerBookingsTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Service</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="customerBookingsBody">
+              <tr>
+                <td colspan="6" class="text-center text-muted">Loading bookings...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- ===== BOOKING DETAILS MODAL ===== -->
+<!-- ============================================ -->
+
+<div class="modal fade" id="bookingDetailModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-receipt text-primary"></i> Booking Details
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="bookingDetailBody">
+        <!-- Loaded via AJAX -->
+        <div class="text-center py-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- ===== STYLES ===== -->
+<!-- ============================================ -->
+
+<style>
+  .admin-page {
+    background: #f8f9fa;
+    min-height: 100vh;
+  }
+
+  .admin-header h2 {
+    font-weight: 700;
+    color: #1a1a2e;
+  }
+
+  .table-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .table th {
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #e9ecef;
+  }
+
+  .table td {
+    vertical-align: middle;
+  }
+
+  .form-select-sm {
+    border-radius: 6px;
+    border: 2px solid #e0e0e0;
+    padding: 4px 25px 4px 10px;
+    font-size: 13px;
+  }
+
+  .form-select-sm:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.15);
+  }
+
+  .customer-details-link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .customer-details-link:hover {
+    text-decoration: underline;
+    color: #0056b3;
+  }
+
+  /* Customer Info Card */
+  .customer-info-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+  }
+
+  .info-item {
+    margin-bottom: 8px;
+  }
+
+  .info-item label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .info-item p {
+    font-size: 15px;
+    font-weight: 500;
+    color: #1a1a2e;
+    margin: 0;
+    padding: 4px 0;
+  }
+
+  #customerBookingsTable {
+    font-size: 14px;
+  }
+
+  #customerBookingsTable th {
+    background: #f8f9fa;
+  }
+
+  .btn-sm {
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  @media (max-width: 768px) {
+    .table-card {
+      padding: 15px;
+    }
+
+    .customer-info-card .row .col-md-6 {
+      margin-bottom: 10px;
+    }
+  }
+</style>
+
+<!-- ============================================ -->
+<!-- ===== SCRIPTS ===== -->
+<!-- ============================================ -->
+
+<script>
+  // ===== CUSTOMER DETAILS MODAL =====
+  document.querySelectorAll('.customer-details-link').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      const userId = this.dataset.userid;
+      const bookingId = this.dataset.bookingid;
+      
+      if (!userId) {
+        alert('Customer details not available');
+        return;
+      }
+      
+      // Show modal
+      const modal = new bootstrap.Modal(document.getElementById('customerModal'));
+      modal.show();
+      
+      // Show loading state
+      document.getElementById('customerName').textContent = 'Loading...';
+      document.getElementById('cName').textContent = 'Loading...';
+      document.getElementById('cEmail').textContent = 'Loading...';
+      document.getElementById('cPhone').textContent = 'Loading...';
+      document.getElementById('cRole').textContent = 'Loading...';
+      document.getElementById('cAddress').textContent = 'Loading...';
+      document.getElementById('cTotalBookings').textContent = 'Loading...';
+      document.getElementById('customerBookingsBody').innerHTML = `
+        <tr>
+          <td colspan="6" class="text-center text-muted">Loading bookings...</td>
+        </tr>
+      `;
+      
+      // Fetch customer details
+      fetch('/admin/customer/' + userId)
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+          if (data.success) {
+            const customer = data.customer;
+            
+            // Update customer info
+            document.getElementById('customerName').textContent = customer.name || 'N/A';
+            document.getElementById('cName').textContent = customer.name || 'N/A';
+            document.getElementById('cEmail').textContent = customer.email || 'N/A';
+            document.getElementById('cPhone').textContent = customer.phone || 'N/A';
+            document.getElementById('cRole').textContent = customer.role || 'customer';
+            document.getElementById('cAddress').textContent = customer.address || 'No address provided';
+            document.getElementById('cTotalBookings').textContent = data.totalBookings || 0;
+            
+            // Populate bookings table
+            const bookings = data.bookings || [];
+            const tbody = document.getElementById('customerBookingsBody');
+            
+            if (bookings.length === 0) {
+              tbody.innerHTML = `
+                <tr>
+                  <td colspan="6" class="text-center text-muted">No bookings found for this customer</td>
+                </tr>
+              `;
+            } else {
+              let html = '';
+              bookings.forEach(function(booking, index) {
+                const statusBadge = getStatusBadge(booking.status);
+                html += `
+                  <tr>
+                    <td>${index + 1}</td>
+                    <td><strong>${booking.serviceName || 'N/A'}</strong></td>
+                    <td>${booking.date || '-'}</td>
+                    <td>${booking.time || '-'}</td>
+                    <td>₹${booking.totalAmount || 0}</td>
+                    <td>${statusBadge}</td>
+                  </tr>
+                `;
+              });
+              tbody.innerHTML = html;
+            }
+          } else {
+            document.getElementById('customerName').textContent = 'Error loading customer';
+            document.getElementById('customerBookingsBody').innerHTML = `
+              <tr>
+                <td colspan="6" class="text-center text-danger">Failed to load customer details</td>
+              </tr>
+            `;
+          }
+        })
+        .catch(function(err) {
+          console.error('Error:', err);
+          document.getElementById('customerName').textContent = 'Error';
+          document.getElementById('customerBookingsBody').innerHTML = `
+            <tr>
+              <td colspan="6" class="text-center text-danger">Error loading data</td>
+            </tr>
+          `;
+        });
+    });
+  });
+
+  // ===== GET STATUS BADGE =====
+  function getStatusBadge(status) {
+    const statusMap = {
+      'pending': '<span class="badge bg-warning">Pending</span>',
+      'confirmed': '<span class="badge bg-primary">Confirmed</span>',
+      'completed': '<span class="badge bg-success">Completed</span>',
+      'cancelled': '<span class="badge bg-danger">Cancelled</span>'
+    };
+    return statusMap[status] || '<span class="badge bg-secondary">' + status + '</span>';
+  }
+
+  // ===== VIEW BOOKING DETAILS =====
+  document.querySelectorAll('.view-booking').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const bookingId = this.dataset.id;
+      
+      const modal = new bootstrap.Modal(document.getElementById('bookingDetailModal'));
+      modal.show();
+      
+      document.getElementById('bookingDetailBody').innerHTML = `
+        <div class="text-center py-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      `;
+      
+      fetch('/admin/booking/' + bookingId)
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+          if (data.success) {
+            const b = data.booking;
+            document.getElementById('bookingDetailBody').innerHTML = `
+              <div class="booking-detail-card">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <div class="detail-item">
+                      <label>Service</label>
+                      <p><strong>${b.serviceName || 'N/A'}</strong></p>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="detail-item">
+                      <label>Status</label>
+                      <p>${getStatusBadge(b.status)}</p>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="detail-item">
+                      <label>Customer</label>
+                      <p>${b.userId ? b.userId.name : 'N/A'}</p>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="detail-item">
+                      <label>Phone</label>
+                      <p>${b.userId ? b.userId.phone : 'N/A'}</p>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="detail-item">
+                      <label>Date</label>
+                      <p>${b.date || '-'}</p>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="detail-item">
+                      <label>Time</label>
+                      <p>${b.time || '-'}</p>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="detail-item">
+                      <label>Duration</label>
+                      <p>${b.duration || 1} hour(s)</p>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="detail-item">
+                      <label>Quantity</label>
+                      <p>${b.quantity || 1}</p>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="detail-item">
+                      <label>Total Amount</label>
+                      <p class="text-success fw-bold">₹${b.totalAmount || 0}</p>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="detail-item">
+                      <label>Booked On</label>
+                      <p>${new Date(b.createdAt).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="detail-item">
+                      <label>Address</label>
+                      <p>${b.address || 'No address provided'}</p>
+                    </div>
+                  </div>
+                  ${b.instructions ? `
+                    <div class="col-md-12">
+                      <div class="detail-item">
+                        <label>Special Instructions</label>
+                        <p>${b.instructions}</p>
+                      </div>
+                    </div>
+                  ` : ''}
+                  ${b.notes ? `
+                    <div class="col-md-12">
+                      <div class="detail-item">
+                        <label>Notes</label>
+                        <p>${b.notes}</p>
+                      </div>
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+            `;
+          } else {
+            document.getElementById('bookingDetailBody').innerHTML = `
+              <div class="text-center text-danger py-4">
+                <i class="fas fa-exclamation-circle fa-2x"></i>
+                <p>Failed to load booking details</p>
+              </div>
+            `;
+          }
+        })
+        .catch(function(err) {
+          console.error('Error:', err);
+          document.getElementById('bookingDetailBody').innerHTML = `
+            <div class="text-center text-danger py-4">
+              <i class="fas fa-exclamation-circle fa-2x"></i>
+              <p>Error loading booking details</p>
+            </div>
+          `;
+        });
+    });
+  });
+
+  // ===== UPDATE BOOKING STATUS =====
+  document.querySelectorAll('.status-select').forEach(function(select) {
+    select.addEventListener('change', function() {
+      const bookingId = this.dataset.id;
+      const status = this.value;
+      
+      fetch('/admin/bookings/' + bookingId + '/status', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: status })
+      })
+      .then(function(response) { return response.json(); })
+      .then(function(data) {
+        if (data.success) {
+          showToast('✅ Booking status updated!', 'success');
+        } else {
+          alert('Failed to update status');
+        }
+      })
+      .catch(function(err) {
+        console.error(err);
+        alert('Error updating status');
+      });
+    });
+  });
+
+  // ===== DELETE BOOKING =====
+  document.querySelectorAll('.delete-booking').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const bookingId = this.dataset.id;
+      if (confirm('Are you sure you want to delete this booking?')) {
+        fetch('/admin/bookings/' + bookingId, {
+          method: 'DELETE'
+        })
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+          if (data.success) {
+            location.reload();
+          } else {
+            alert('Failed to delete booking');
+          }
+        })
+        .catch(function(err) {
+          console.error(err);
+          alert('Error deleting booking');
+        });
+      }
+    });
+  });
+
+  // ===== TOAST FUNCTION =====
+  function showToast(message, type) {
+    var container = document.querySelector('.toast-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.className = 'toast-container';
+      container.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 99999;
+        max-width: 380px;
+        width: 100%;
+      `;
+      document.body.appendChild(container);
+    }
+
+    var toast = document.createElement('div');
+    toast.style.cssText = `
+      background: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      margin-bottom: 10px;
+      transform: translateX(120%);
+      transition: transform 0.4s ease;
+      border-left: 4px solid ${type === 'success' ? '#28a745' : '#dc3545'};
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    `;
+
+    var icon = type === 'success' ? '✅' : '❌';
+    toast.innerHTML = `
+      <span style="font-size: 20px;">${icon}</span>
+      <span style="flex: 1; font-size: 14px;">${message}</span>
+      <button onclick="this.parentElement.remove()" style="
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: #999;
+      ">&times;</button>
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(function() {
+      toast.style.transform = 'translateX(0)';
+    }, 50);
+
+    setTimeout(function() {
+      toast.style.transform = 'translateX(120%)';
+      setTimeout(function() {
+        toast.remove();
+      }, 400);
+    }, 4000);
+  }
+</script>

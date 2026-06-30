@@ -1,0 +1,710 @@
+<%- layout("/layouts/boilerplate.ejs") %>
+
+<div class="hire-page">
+  <div class="container py-4">
+
+    <!-- Page Header -->
+    <div class="hire-header text-center mb-4">
+      <h1><i class="fas fa-user-tie text-primary"></i> Get Hired</h1>
+      <p class="text-muted">Join Ring4Help as a Service Provider</p>
+    </div>
+
+    <!-- ===== PROGRESS STEPS ===== -->
+    <div class="progress-steps" id="progressSteps">
+      <div class="step active" data-step="1">
+        <span class="step-number">1</span>
+        <span class="step-label">Personal Info</span>
+      </div>
+      <div class="step" data-step="2">
+        <span class="step-number">2</span>
+        <span class="step-label">Documents</span>
+      </div>
+      <div class="step" data-step="3">
+        <span class="step-number">3</span>
+        <span class="step-label">Bank Details</span>
+      </div>
+      <div class="step" data-step="4">
+        <span class="step-number">4</span>
+        <span class="step-label">Availability</span>
+      </div>
+    </div>
+
+    <!-- ===== FORM WITH SLIDER ===== -->
+    <form action="/get-hired" method="POST" enctype="multipart/form-data" class="hire-form" id="hireForm">
+      
+      <!-- ===== SLIDER WRAPPER ===== -->
+      <div class="slider-wrapper" id="sliderWrapper">
+        
+        <!-- ===== STEP 1: BUSINESS INFO ===== -->
+        <div class="form-step active" data-step="1">
+          <div class="form-section">
+            <h5><i class="fas fa-briefcase text-primary"></i> Business Information</h5>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Company/Business Name <span class="text-danger">*</span></label>
+                <input type="text" name="companyName" class="form-control" placeholder="Your business name" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Business Type <span class="text-danger">*</span></label>
+                <select name="businessType" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="individual">Individual</option>
+                  <option value="partnership">Partnership</option>
+                  <option value="company">Company</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label class="form-label">About Your Business</label>
+                <textarea name="description" class="form-control" rows="3" placeholder="Tell us about your services and experience..."></textarea>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Years of Experience</label>
+                <input type="number" name="experience" class="form-control" placeholder="e.g., 5" min="0">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Specialization</label>
+                <input type="text" name="specialization" class="form-control" placeholder="e.g., AC Repair, Plumbing">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h5><i class="fas fa-map-marker-alt text-danger"></i> Location & Pricing</h5>
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label">Street Address <span class="text-danger">*</span></label>
+                <input type="text" name="street" class="form-control" placeholder="House No, Street, Area" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">City <span class="text-danger">*</span></label>
+                <input type="text" name="city" class="form-control" placeholder="City" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">State <span class="text-danger">*</span></label>
+                <input type="text" name="state" class="form-control" placeholder="State" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Pincode <span class="text-danger">*</span></label>
+                <input type="text" name="pincode" class="form-control" placeholder="Pincode" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Service Radius (km)</label>
+                <input type="number" name="serviceRadius" class="form-control" value="10" min="1" max="100">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Hourly Rate (₹) <span class="text-danger">*</span></label>
+                <input type="number" name="hourlyRate" class="form-control" placeholder="e.g., 500" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Minimum Charge (₹)</label>
+                <input type="number" name="minimumCharge" class="form-control" placeholder="e.g., 200">
+              </div>
+            </div>
+          </div>
+
+          <div class="step-actions">
+            <button type="button" class="btn btn-primary next-step">
+              Next Step <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- ===== STEP 2: DOCUMENTS ===== -->
+        <div class="form-step" data-step="2">
+          <div class="form-section">
+            <h5><i class="fas fa-id-card text-warning"></i> Identity Documents</h5>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Aadhar Card <span class="text-danger">*</span></label>
+                <input type="file" name="aadhar" class="form-control-file" accept=".jpg,.jpeg,.png,.pdf" required>
+                <small class="text-muted">Upload front & back (JPEG, PNG, PDF)</small>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">PAN Card</label>
+                <input type="file" name="pan" class="form-control-file" accept=".jpg,.jpeg,.png,.pdf">
+              </div>
+              <div class="col-12">
+                <label class="form-label">Profile Photo <span class="text-danger">*</span></label>
+                <input type="file" name="profileImage" class="form-control-file" accept=".jpg,.jpeg,.png" required>
+                <small class="text-muted">Upload a recent passport size photo</small>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Certificates (Optional)</label>
+                <input type="file" name="certificate" class="form-control-file" accept=".jpg,.jpeg,.png,.pdf" multiple>
+                <small class="text-muted">You can upload multiple certificates</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-actions">
+            <button type="button" class="btn btn-secondary prev-step">
+              <i class="fas fa-arrow-left"></i> Previous
+            </button>
+            <button type="button" class="btn btn-primary next-step">
+              Next Step <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- ===== STEP 3: BANK DETAILS ===== -->
+        <div class="form-step" data-step="3">
+          <div class="form-section">
+            <h5><i class="fas fa-university text-info"></i> Bank Details</h5>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Account Holder Name</label>
+                <input type="text" name="accountHolderName" class="form-control" placeholder="As per bank account">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Account Number</label>
+                <input type="text" name="accountNumber" class="form-control" placeholder="Account number">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Bank Name</label>
+                <input type="text" name="bankName" class="form-control" placeholder="Bank name">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">IFSC Code</label>
+                <input type="text" name="ifscCode" class="form-control" placeholder="IFSC code">
+              </div>
+              <div class="col-12">
+                <label class="form-label">UPI ID</label>
+                <input type="text" name="upiId" class="form-control" placeholder="example@upi">
+              </div>
+            </div>
+          </div>
+
+          <div class="step-actions">
+            <button type="button" class="btn btn-secondary prev-step">
+              <i class="fas fa-arrow-left"></i> Previous
+            </button>
+            <button type="button" class="btn btn-primary next-step">
+              Next Step <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- ===== STEP 4: AVAILABILITY ===== -->
+        <div class="form-step" data-step="4">
+          <div class="form-section">
+            <h5><i class="fas fa-clock text-primary"></i> Availability</h5>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Weekday Start Time</label>
+                <input type="time" name="weekdayStart" class="form-control" value="09:00">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Weekday End Time</label>
+                <input type="time" name="weekdayEnd" class="form-control" value="18:00">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Saturday Start Time</label>
+                <input type="time" name="saturdayStart" class="form-control" value="10:00">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Saturday End Time</label>
+                <input type="time" name="saturdayEnd" class="form-control" value="16:00">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Sunday Start Time</label>
+                <input type="time" name="sundayStart" class="form-control" value="">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Sunday End Time</label>
+                <input type="time" name="sundayEnd" class="form-control" value="">
+              </div>
+            </div>
+          </div>
+
+          <!-- Terms -->
+          <div class="form-section">
+            <h5><i class="fas fa-check-circle text-success"></i> Terms & Conditions</h5>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" id="terms" required>
+              <label class="form-check-label" for="terms">
+                I confirm that all information provided is correct and I agree to the 
+                <a href="/terms">Terms & Conditions</a>
+              </label>
+            </div>
+            <div class="form-check mt-2">
+              <input type="checkbox" class="form-check-input" id="backgroundCheck" required>
+              <label class="form-check-label" for="backgroundCheck">
+                I consent to a background verification check
+              </label>
+            </div>
+          </div>
+
+          <div class="step-actions">
+            <button type="button" class="btn btn-secondary prev-step">
+              <i class="fas fa-arrow-left"></i> Previous
+            </button>
+            <button type="submit" class="btn btn-success btn-lg" id="submitBtn">
+              <i class="fas fa-paper-plane"></i> Submit Application
+            </button>
+          </div>
+        </div>
+
+      </div><!-- end slider-wrapper -->
+
+    </form>
+
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- ===== STYLES ===== -->
+<!-- ============================================ -->
+
+<style>
+  .hire-page {
+    background: #f8f9fa;
+    min-height: 100vh;
+    padding: 20px 0;
+  }
+
+  .hire-header h1 {
+    font-weight: 700;
+    color: #1a1a2e;
+  }
+
+  /* ===== PROGRESS STEPS ===== */
+  .progress-steps {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 30px;
+    margin-bottom: 40px;
+    position: relative;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .progress-steps::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 10%;
+    right: 10%;
+    height: 3px;
+    background: #ddd;
+    z-index: 0;
+  }
+
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .step-number {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #ddd;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 6px;
+    transition: all 0.4s ease;
+  }
+
+  .step.active .step-number {
+    background: #007bff;
+    box-shadow: 0 0 25px rgba(0,123,255,0.4);
+    transform: scale(1.05);
+  }
+
+  .step.completed .step-number {
+    background: #28a745;
+  }
+
+  .step-label {
+    font-size: 13px;
+    color: #6c757d;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+
+  .step.active .step-label {
+    color: #007bff;
+    font-weight: 600;
+  }
+
+  .step.completed .step-label {
+    color: #28a745;
+  }
+
+  /* ===== SLIDER WRAPPER ===== */
+  .slider-wrapper {
+    position: relative;
+    overflow: hidden;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .form-step {
+    display: none;
+    animation: slideIn 0.5s ease;
+    padding: 5px 0;
+  }
+
+  .form-step.active {
+    display: block;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .form-section {
+    background: white;
+    padding: 25px 30px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+
+  .form-section h5 {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f0f0f0;
+    font-weight: 600;
+  }
+
+  .form-label {
+    font-weight: 500;
+    font-size: 14px;
+    color: #495057;
+  }
+
+  .form-control {
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    transition: all 0.3s;
+  }
+
+  .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.15);
+  }
+
+  .form-control-file {
+    width: 100%;
+    padding: 12px;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .form-control-file:hover {
+    border-color: #007bff;
+    background: #f0f7ff;
+  }
+
+  .text-muted {
+    font-size: 12px;
+    color: #6c757d;
+  }
+
+  /* ===== STEP ACTIONS ===== */
+  .step-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 10px;
+  }
+
+  .step-actions .btn {
+    padding: 12px 35px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s;
+    min-width: 150px;
+  }
+
+  .step-actions .btn-primary {
+    background: #007bff;
+    border: none;
+  }
+
+  .step-actions .btn-primary:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,123,255,0.3);
+  }
+
+  .step-actions .btn-secondary {
+    background: #6c757d;
+    border: none;
+  }
+
+  .step-actions .btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+  }
+
+  .step-actions .btn-success {
+    background: #28a745;
+    border: none;
+  }
+
+  .step-actions .btn-success:hover {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(40,167,69,0.3);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .form-section {
+      padding: 18px;
+    }
+
+    .progress-steps {
+      gap: 15px;
+      overflow-x: auto;
+      padding: 0 10px;
+    }
+
+    .progress-steps::before {
+      display: none;
+    }
+
+    .step-label {
+      font-size: 11px;
+    }
+
+    .step-number {
+      width: 35px;
+      height: 35px;
+      font-size: 14px;
+    }
+
+    .step-actions {
+      flex-direction: column;
+    }
+
+    .step-actions .btn {
+      width: 100%;
+      min-width: unset;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .hire-header h1 {
+      font-size: 1.8rem;
+    }
+
+    .progress-steps {
+      gap: 8px;
+    }
+
+    .step-number {
+      width: 30px;
+      height: 30px;
+      font-size: 12px;
+    }
+
+    .step-label {
+      font-size: 10px;
+    }
+  }
+</style>
+
+<!-- ============================================ -->
+<!-- ===== SCRIPTS ===== -->
+<!-- ============================================ -->
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    let currentStep = 1;
+    const totalSteps = 4;
+
+    // ===== SHOW STEP WITH SLIDE EFFECT =====
+    function showStep(step) {
+      // Hide all steps with slide out
+      document.querySelectorAll('.form-step').forEach(function(el) {
+        el.classList.remove('active');
+        el.style.animation = 'none';
+      });
+
+      // Show current step with slide in
+      const currentEl = document.querySelector('.form-step[data-step="' + step + '"]');
+      currentEl.classList.add('active');
+      currentEl.style.animation = 'slideIn 0.5s ease';
+
+      // Update progress steps
+      document.querySelectorAll('.step').forEach(function(el) {
+        const stepNum = parseInt(el.dataset.step);
+        el.classList.remove('active', 'completed');
+        
+        if (stepNum === step) {
+          el.classList.add('active');
+        } else if (stepNum < step) {
+          el.classList.add('completed');
+        }
+      });
+
+      currentStep = step;
+    }
+
+    // ===== NEXT STEP =====
+    document.querySelectorAll('.next-step').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const currentStepEl = document.querySelector('.form-step.active');
+        const inputs = currentStepEl.querySelectorAll('input[required], select[required]');
+        let valid = true;
+
+        // Validate required fields
+        inputs.forEach(function(input) {
+          if (input.type === 'file') {
+            // File input validation
+            if (!input.files || input.files.length === 0) {
+              input.style.borderColor = '#dc3545';
+              valid = false;
+            } else {
+              input.style.borderColor = '#28a745';
+            }
+          } else if (!input.value.trim()) {
+            input.style.borderColor = '#dc3545';
+            valid = false;
+          } else {
+            input.style.borderColor = '#e0e0e0';
+          }
+        });
+
+        if (!valid) {
+          showToast('❌ Please fill all required fields', 'error');
+          return;
+        }
+
+        if (currentStep < totalSteps) {
+          showStep(currentStep + 1);
+        }
+      });
+    });
+
+    // ===== PREVIOUS STEP =====
+    document.querySelectorAll('.prev-step').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        if (currentStep > 1) {
+          showStep(currentStep - 1);
+        }
+      });
+    });
+
+    // ===== STEP CLICK =====
+    document.querySelectorAll('.step').forEach(function(step) {
+      step.addEventListener('click', function() {
+        const stepNum = parseInt(this.dataset.step);
+        if (stepNum <= currentStep) {
+          showStep(stepNum);
+        }
+      });
+    });
+
+    // ===== TOAST FUNCTION =====
+    function showToast(message, type) {
+      var container = document.querySelector('.toast-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container';
+        container.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          z-index: 99999;
+          max-width: 380px;
+          width: 100%;
+        `;
+        document.body.appendChild(container);
+      }
+
+      var toast = document.createElement('div');
+      toast.style.cssText = `
+        background: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        margin-bottom: 10px;
+        transform: translateX(120%);
+        transition: transform 0.4s ease;
+        border-left: 4px solid ${type === 'success' ? '#28a745' : '#dc3545'};
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      `;
+
+      var icon = type === 'success' ? '✅' : '❌';
+      toast.innerHTML = `
+        <span style="font-size: 20px;">${icon}</span>
+        <span style="flex: 1; font-size: 14px;">${message}</span>
+        <button onclick="this.parentElement.remove()" style="
+          background: none;
+          border: none;
+          font-size: 20px;
+          cursor: pointer;
+          color: #999;
+        ">&times;</button>
+      `;
+
+      container.appendChild(toast);
+
+      setTimeout(function() {
+        toast.style.transform = 'translateX(0)';
+      }, 50);
+
+      setTimeout(function() {
+        toast.style.transform = 'translateX(120%)';
+        setTimeout(function() {
+          toast.remove();
+        }, 400);
+      }, 4000);
+    }
+
+    // ===== FORM SUBMIT VALIDATION =====
+    document.getElementById('hireForm').addEventListener('submit', function(e) {
+      const terms = document.getElementById('terms');
+      const backgroundCheck = document.getElementById('backgroundCheck');
+
+      if (!terms.checked || !backgroundCheck.checked) {
+        e.preventDefault();
+        showToast('❌ Please accept all terms and conditions', 'error');
+      }
+    });
+
+    // ===== REMOVE RED BORDER ON INPUT =====
+    document.querySelectorAll('input, select').forEach(function(el) {
+      el.addEventListener('input', function() {
+        if (this.value.trim()) {
+          this.style.borderColor = '#e0e0e0';
+        }
+      });
+    });
+
+    // ===== FILE INPUT BORDER RESET =====
+    document.querySelectorAll('input[type="file"]').forEach(function(el) {
+      el.addEventListener('change', function() {
+        if (this.files && this.files.length > 0) {
+          this.style.borderColor = '#28a745';
+        }
+      });
+    });
+  });
+</script>

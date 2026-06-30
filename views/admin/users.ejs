@@ -1,0 +1,143 @@
+<%- layout("/layouts/boilerplate.ejs") %>
+
+<div class="admin-page">
+  <div class="container py-4">
+
+    <!-- Page Header -->
+    <div class="admin-header mb-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h2><i class="fas fa-users text-primary"></i> Manage Users</h2>
+          <p class="text-muted">View and manage all registered users</p>
+        </div>
+        <a href="/admin/dashboard" class="btn btn-outline-secondary">
+          <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+      </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="table-card">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Role</th>
+              <th>Joined</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (users && users.length > 0) { %>
+              <% for (var i = 0; i < users.length; i++) { 
+                var userItem = users[i]; %>
+                <tr>
+                  <td><%= i + 1 %></td>
+                  <td><strong><%= userItem.name %></strong></td>
+                  <td><%= userItem.email %></td>
+                  <td><%= userItem.phone %></td>
+                  <td>
+                    <span class="badge <%= userItem.role === 'admin' ? 'bg-danger' : userItem.role === 'provider' ? 'bg-primary' : 'bg-secondary' %>">
+                      <%= userItem.role %>
+                    </span>
+                  </td>
+                  <td><%= new Date(userItem.createdAt).toLocaleDateString() %></td>
+                  <td>
+                    <button class="btn btn-sm btn-danger delete-user" data-id="<%= userItem._id %>">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              <% } %>
+            <% } else { %>
+              <tr>
+                <td colspan="7" class="text-center py-4">No users found</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- ===== STYLES ===== -->
+<!-- ============================================ -->
+
+<style>
+  .admin-page {
+    background: #f8f9fa;
+    min-height: 100vh;
+  }
+
+  .admin-header h2 {
+    font-weight: 700;
+    color: #1a1a2e;
+  }
+
+  .table-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .table th {
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #e9ecef;
+  }
+
+  .table td {
+    vertical-align: middle;
+  }
+
+  .badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .btn-danger {
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  @media (max-width: 768px) {
+    .table-card {
+      padding: 15px;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll('.delete-user').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const userId = this.dataset.id;
+      if (confirm('Are you sure you want to delete this user?')) {
+        fetch('/admin/users/' + userId, {
+          method: 'DELETE'
+        })
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+          if (data.success) {
+            location.reload();
+          } else {
+            alert('Failed to delete user');
+          }
+        })
+        .catch(function(err) {
+          console.error(err);
+          alert('Error deleting user');
+        });
+      }
+    });
+  });
+</script>

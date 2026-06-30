@@ -1,0 +1,43 @@
+<!-- //form for connext us  -->
+ <%- layout("layouts/boilerplate.ejs") %>
+
+<div class="contact-page">
+
+  <section class="contact-card">
+
+    <h2 class="contact-title">Get in Touch</h2>
+    <p class="contact-subtitle">
+      Have a question or need help?  
+      Just drop a message.
+    </p>
+
+    <form  action="https://formspree.io/f/mvzooqng"
+  method="POST"  class="contact-form">
+
+      <div class="form-group">
+        <label>Your Name</label>
+        <input type="text" name="name" required>
+      </div>
+
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" name="email" required>
+      </div>
+
+      <div class="form-group">
+        <label>Your Message</label>
+        <textarea name="message" rows="5" required></textarea>
+      </div>
+
+      <button type="submit" class="contact-btn">
+        Send Message
+      </button>
+
+    </form>
+
+  </section>
+
+</div>
+
+
+

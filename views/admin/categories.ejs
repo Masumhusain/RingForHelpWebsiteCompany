@@ -1,0 +1,149 @@
+<%- layout("/layouts/boilerplate.ejs") %>
+
+<div class="admin-page">
+  <div class="container py-4">
+
+    <!-- Page Header -->
+    <div class="admin-header mb-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h2><i class="fas fa-tags text-primary"></i> Manage Categories</h2>
+          <p class="text-muted">View and manage all service categories</p>
+        </div>
+        <div>
+          <a href="/addCategory" class="btn btn-primary">
+            <i class="fas fa-plus-circle"></i> Add Category
+          </a>
+          <a href="/admin/dashboard" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Categories Table -->
+    <div class="table-card">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Category Name</th>
+              <th>Slug</th>
+              <th>Services</th>
+              <th>Created</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (categories && categories.length > 0) { %>
+              <% for (var i = 0; i < categories.length; i++) { 
+                var category = categories[i]; %>
+                <tr>
+                  <td><%= i + 1 %></td>
+                  <td><strong><%= category.categoryName %></strong></td>
+                  <td><code><%= category.slug %></code></td>
+                  <td><span class="badge bg-primary"><%= category.items ? category.items.length : 0 %></span></td>
+                  <td><%= new Date(category.createdAt).toLocaleDateString() %></td>
+                  <td>
+                    <button class="btn btn-sm btn-danger delete-category" data-id="<%= category._id %>">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              <% } %>
+            <% } else { %>
+              <tr>
+                <td colspan="6" class="text-center py-4">No categories found</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- ===== STYLES ===== -->
+<!-- ============================================ -->
+
+<style>
+  .admin-page {
+    background: #f8f9fa;
+    min-height: 100vh;
+  }
+
+  .admin-header h2 {
+    font-weight: 700;
+    color: #1a1a2e;
+  }
+
+  .table-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .table th {
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #e9ecef;
+  }
+
+  .table td {
+    vertical-align: middle;
+  }
+
+  .badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  code {
+    background: #f8f9fa;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+
+  .btn-sm {
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  @media (max-width: 768px) {
+    .table-card {
+      padding: 15px;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll('.delete-category').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const categoryId = this.dataset.id;
+      if (confirm('Are you sure you want to delete this category? All services will be removed.')) {
+        fetch('/admin/categories/' + categoryId, {
+          method: 'DELETE'
+        })
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+          if (data.success) {
+            location.reload();
+          } else {
+            alert('Failed to delete category');
+          }
+        })
+        .catch(function(err) {
+          console.error(err);
+          alert('Error deleting category');
+        });
+      }
+    });
+  });
+</script>
