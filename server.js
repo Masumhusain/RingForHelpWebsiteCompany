@@ -12,7 +12,7 @@ const LocalStrategy = require('passport-local').Strategy; // ✅ Fixed import
 const methodOverride = require('method-override');
 
 const engine = require('ejs-mate');
-const wrapAsync = require("./utils/wrapAsync.js");
+const WrapAsync = require("./utils/WrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
 
 const app = express();

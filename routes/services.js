@@ -5,26 +5,26 @@ const Category = require('../models/category');
 const { isLoggedIn , isAdmin} = require('../middleware/auth');
 
 // ===== WRAP ASYNC HELPER =====
-const wrapAsync = function(fn) {
+const WrapAsync = function(fn) {
   return function(req, res, next) {
     fn(req, res, next).catch(next);
   };
 };
 
 // ===== HOME PAGE =====
-router.get('/', wrapAsync(async function(req, res) {
+router.get('/', WrapAsync(async function(req, res) {
   const categories = await Category.find({});
   res.render('Home/home.ejs', { categories });
 }));
 
 // ===== ALL SERVICES =====
-router.get('/services',isLoggedIn, wrapAsync(async function(req, res) {
+router.get('/services',isLoggedIn, WrapAsync(async function(req, res) {
   const services = await Category.find({});
   res.render('Services/services', { services });
 }));
 
 // ===== CATEGORY SPECIFIC SERVICES =====
-router.get('/category/:slug', isLoggedIn, wrapAsync(async function(req, res) {
+router.get('/category/:slug', isLoggedIn, WrapAsync(async function(req, res) {
   const { slug } = req.params;
   const category = await Category.findOne({ slug });
   
@@ -38,7 +38,7 @@ router.get('/category/:slug', isLoggedIn, wrapAsync(async function(req, res) {
 }));
 
 // ===== SERVICE DETAIL =====
-router.get('/service/:categorySlug/:serviceSlug',isLoggedIn, wrapAsync(async function(req, res) {
+router.get('/service/:categorySlug/:serviceSlug',isLoggedIn, WrapAsync(async function(req, res) {
   const { categorySlug, serviceSlug } = req.params;
   
   const category = await Category.findOne({ slug: categorySlug });
@@ -70,7 +70,7 @@ router.get('/addCategory', isLoggedIn, isAdmin, function(req, res) {
 });
 
 // ===== ADD CATEGORY SUBMIT =====
-router.post('/addCategory' , wrapAsync(async function(req, res) {
+router.post('/addCategory' , WrapAsync(async function(req, res) {
   const { categoryName, categorySlug, items } = req.body;
 
   if (!categoryName || !categorySlug) {
@@ -121,13 +121,13 @@ router.post('/addCategory' , wrapAsync(async function(req, res) {
 }));
 
 // ===== ABOUT =====
-router.get('/about',isLoggedIn, wrapAsync(async function(req, res) {
+router.get('/about',isLoggedIn, WrapAsync(async function(req, res) {
   const categories = await Category.find({});
   res.render('About/about', { categories });
 }));
 
 // ===== CONNECT =====
-router.get('/connect', wrapAsync(async function(req, res) {
+router.get('/connect', WrapAsync(async function(req, res) {
   const categories = await Category.find({});
   res.render('Connect/connectUs', { categories });
 }));
