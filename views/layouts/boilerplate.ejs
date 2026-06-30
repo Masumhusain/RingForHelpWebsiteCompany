@@ -157,7 +157,8 @@
     </style>
 </head>
 <body>
-
+<!-- Include loader at the beginning of body -->
+    <%- include('../includes/loader.ejs') %>
     <!-- ===== HEADER (NAVBAR) ===== -->
     <%- include("../includes/header.ejs") %>
 
@@ -165,6 +166,7 @@
     <!-- ===== MAIN CONTENT ===== -->
     <div class="full-body">
             <%- include("../includes/flash.ejs") %>
+            
         <%- body %>
     </div>
 
@@ -208,5 +210,7 @@
             }, 5000);
         });
     </script>
+     <!-- Your scripts -->
+    <script src="/js/loader.js"></script>
 </body>
 </html>
