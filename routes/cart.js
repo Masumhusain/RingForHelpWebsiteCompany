@@ -333,7 +333,7 @@ router.get('/my-bookings', isLoggedIn, wrapAsync(async function(req, res) {
   const bookings = await booking.find({ userId: req.session.userId })
     .sort({ createdAt: -1 });
 
-  res.render('bookings/my-bookings', {
+  res.render('Bookings/my-bookings', {
     bookings: bookings,
     user: req.user
   });
@@ -352,7 +352,7 @@ router.get('/booking/:id', isLoggedIn, wrapAsync(async function(req, res) {
     throw err;
   }
 
-  res.render('bookings/booking-detail', {
+  res.render('Bookings/booking-detail', {
     booking: booking,
     user: req.user
   });
